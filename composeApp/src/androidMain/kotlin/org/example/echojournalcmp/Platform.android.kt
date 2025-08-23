@@ -1,4 +1,4 @@
-package org.example.project
+package org.example.echojournalcmp
 
 import android.os.Build
 

@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +6,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -42,6 +43,41 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation(libs.androidx.core.ktx)
+            implementation(libs.androidx.lifecycle.runtime.ktx)
+            implementation(libs.androidx.lifecycle.process)
+            implementation(libs.androidx.activity.compose)
+            implementation(project.dependencies.platform(libs.androidx.compose.bom))
+            implementation(libs.androidx.ui)
+            implementation(libs.androidx.ui.graphics)
+            implementation(libs.androidx.ui.tooling.preview)
+            implementation(libs.androidx.material3)
+            implementation("androidx.compose.material:material-icons-core:1.7.8") // Or the latest version
+            implementation("androidx.compose.material:material-icons-extended:1.7.8") // For extended icons
+
+
+            // Splashscreen & Widget
+            implementation(libs.androidx.core.splashscreen)
+            implementation(libs.bundles.widget.glance)
+
+            // Database - Room
+            implementation(libs.room.ktx)
+            implementation(libs.room.runtime)
+
+            // DI - Koin
+            implementation(libs.bundles.koin)
+
+            // Navigation
+            implementation(libs.androidx.compose.navigation)
+            implementation(libs.kotlinx.serialization.json)
+
+            // Allow use of java.time.Instant below API 26
+            // coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+            // Logging
+            implementation(libs.kermit)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -50,11 +86,11 @@ kotlin {
 }
 
 android {
-    namespace = "org.example.project"
+    namespace = "me.androidbox.echojournalcmp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.example.project"
+        applicationId = "me.androidbox.echojournalcmp"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -76,7 +112,13 @@ android {
     }
 }
 
+room {
+    schemaDirectory("$projectDir/schema")
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
+
+    ksp(libs.room.compiler)
 }
 

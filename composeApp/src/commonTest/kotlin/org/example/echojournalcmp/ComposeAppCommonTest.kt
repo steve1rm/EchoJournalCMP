@@ -1,4 +1,4 @@
-package org.example.project
+package org.example.echojournalcmp
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

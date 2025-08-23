@@ -1,4 +1,4 @@
-package org.example.project
+package org.example.echojournalcmp
 
 interface Platform {
     val name: String
