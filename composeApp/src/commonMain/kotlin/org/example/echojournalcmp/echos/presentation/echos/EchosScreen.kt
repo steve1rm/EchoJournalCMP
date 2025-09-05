@@ -1,0 +1,86 @@
+package org.example.echojournalcmp.echos.presentation.echos
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import org.example.echojournalcmp.core.presentation.designsystem.theme.EchoJournalCMPTheme
+import org.example.echojournalcmp.core.presentation.designsystem.theme.buttonGradient
+import org.example.echojournalcmp.echos.presentation.echos.components.EchoRecordFloatingActionButton
+import org.example.echojournalcmp.echos.presentation.echos.components.EchosEmptyBackground
+import org.example.echojournalcmp.echos.presentation.echos.components.EchosTopBar
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
+
+@Composable
+fun EchosScreen(
+    state: EchosState,
+    onAction: (EchosAction) -> Unit,
+) {
+    Scaffold(
+        topBar = {
+            EchosTopBar(
+                onSettingsClick = {
+                    onAction(EchosAction.OnSettingsClick)
+                }
+            )
+        },
+        floatingActionButton = {
+            EchoRecordFloatingActionButton(
+                onClick = {
+                    onAction(EchosAction.OnFabClick)
+                }
+            )
+        },
+        content = { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = MaterialTheme.colorScheme.buttonGradient
+                    )
+                    .padding(innerPadding)
+            ) {
+                when {
+                    state.isLoadingData -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .wrapContentSize(),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    !state.hasEchosRecorded -> {
+                        EchosEmptyBackground(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                        )
+                    }
+                }
+            }
+        }
+    )
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    EchoJournalCMPTheme {
+        EchosScreen(
+            state = EchosState(
+                isLoadingData = false,
+                hasEchosRecorded = false
+            ),
+            onAction = {}
+        )
+    }
+}
