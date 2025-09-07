@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.example.echojournalcmp.core.presentation.designsystem.theme.EchoJournalCMPTheme
 import org.example.echojournalcmp.core.presentation.designsystem.theme.buttonGradient
+import org.example.echojournalcmp.echos.presentation.echos.components.EchoFilterRow
 import org.example.echojournalcmp.echos.presentation.echos.components.EchoRecordFloatingActionButton
 import org.example.echojournalcmp.echos.presentation.echos.components.EchosEmptyBackground
 import org.example.echojournalcmp.echos.presentation.echos.components.EchosTopBar
@@ -48,6 +49,18 @@ fun EchosScreen(
                     )
                     .padding(innerPadding)
             ) {
+                EchoFilterRow(
+                    moodChipContent = state.moodChipContent,
+                    hasActiveMoodFilters = state.hasActiveMoodFilters,
+                    selectedEchoFilterChip = state.selectedEchoFilterChip,
+                    moods = state.moods,
+                    topicChipTitle = state.topicChipTitle.asString(),
+                    hasActiveTopicFilters = state.hasActiveTopicFilters,
+                    topics = state.topics,
+                    onAction = onAction,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
                 when {
                     state.isLoadingData -> {
                         CircularProgressIndicator(
