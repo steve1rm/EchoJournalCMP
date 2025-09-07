@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import echojournalcmp.composeapp.generated.resources.Res
-import echojournalcmp.composeapp.generated.resources.app_name
 import echojournalcmp.composeapp.generated.resources.settings
 import echojournalcmp.composeapp.generated.resources.title_echos
 import org.example.echojournalcmp.core.presentation.designsystem.theme.EchoJournalCMPTheme

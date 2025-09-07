@@ -24,7 +24,7 @@ import echojournalcmp.composeapp.generated.resources.you_don_t_have_any_topics_y
 import org.example.echojournalcmp.core.presentation.designsystem.chips.MultiChoiceChip
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.SelectableDropdownOptionsMenu
-import org.example.echojournalcmp.echos.model.MoodUi
+import org.example.echojournalcmp.echos.presentation.model.MoodUi
 import org.example.echojournalcmp.echos.presentation.echos.EchosAction
 import org.example.echojournalcmp.echos.presentation.echos.model.EchoFilterChip
 import org.example.echojournalcmp.echos.presentation.echos.model.MoodChipContent

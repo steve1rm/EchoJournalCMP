@@ -5,7 +5,7 @@ import echojournalcmp.composeapp.generated.resources.all_topics
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable.Companion.asUnselectedItems
 import org.example.echojournalcmp.core.presentation.util.UiText
-import org.example.echojournalcmp.echos.model.MoodUi
+import org.example.echojournalcmp.echos.presentation.model.MoodUi
 import org.example.echojournalcmp.echos.presentation.echos.model.EchoFilterChip
 import org.example.echojournalcmp.echos.presentation.echos.model.MoodChipContent
 

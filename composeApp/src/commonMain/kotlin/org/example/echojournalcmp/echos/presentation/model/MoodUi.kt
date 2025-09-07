@@ -1,4 +1,4 @@
-package org.example.echojournalcmp.echos.model
+package org.example.echojournalcmp.echos.presentation.model
 
 import androidx.compose.ui.graphics.Color
 import echojournalcmp.composeapp.generated.resources.Res

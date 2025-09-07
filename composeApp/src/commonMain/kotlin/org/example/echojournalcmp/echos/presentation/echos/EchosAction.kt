@@ -1,6 +1,6 @@
 package org.example.echojournalcmp.echos.presentation.echos
 
-import org.example.echojournalcmp.echos.model.MoodUi
+import org.example.echojournalcmp.echos.presentation.model.MoodUi
 import org.example.echojournalcmp.echos.presentation.echos.model.EchoFilterChip
 
 sealed interface EchosAction {
