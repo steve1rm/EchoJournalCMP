@@ -31,7 +31,6 @@ import org.example.echojournalcmp.echos.presentation.echos.model.MoodChipContent
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @Composable
 fun EchoFilterRow(
@@ -45,10 +44,6 @@ fun EchoFilterRow(
     onAction: (EchosAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    var isExpanded by remember {
-        mutableStateOf(false)
-    }
 
     var dropDownOffset by remember {
         mutableStateOf(IntOffset.Zero)
@@ -100,10 +95,9 @@ fun EchoFilterRow(
                     },
                     onDismiss = {
                         onAction(EchosAction.OnDismissMoodDropDown)
-                        isExpanded = true
                     },
                     key = { moodUi ->
-                        Uuid.random().toString()
+                        moodUi.title.hashCode()
                     },
                     onItemClick = { moodUi ->
                         onAction(EchosAction.OnFilterByMoodClick(moodUi.item))
@@ -124,22 +118,6 @@ fun EchoFilterRow(
             displayText = topicChipTitle,
             onClick = {
                 onAction(EchosAction.OnTopicChipClick)
-            },
-            leadingContent = {
-                if(moodChipContent.iconRes.isNotEmpty()) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy((-4).dp),
-                        modifier = Modifier.padding(end = 8.dp)
-                    ) {
-                        moodChipContent.iconRes.forEach { iconRes ->
-                            Image(
-                                modifier = Modifier.height(16.dp),
-                                imageVector = vectorResource(iconRes),
-                                contentDescription = moodChipContent.title.asString()
-                            )
-                        }
-                    }
-                }
             },
             isClearVisible = hasActiveTopicFilters,
             isDropDownVisible = selectedEchoFilterChip == EchoFilterChip.TOPICS,
@@ -171,7 +149,6 @@ fun EchoFilterRow(
                         },
                         onDismiss = {
                             onAction(EchosAction.OnDismissTopicDropDown)
-                            isExpanded = true
                         },
                         key = { topic ->
                             topic
