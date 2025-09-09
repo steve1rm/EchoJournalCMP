@@ -55,7 +55,7 @@ kotlin {
             implementation(libs.androidx.material3)
             implementation("androidx.compose.material:material-icons-core:1.7.8") // Or the latest version
             implementation("androidx.compose.material:material-icons-extended:1.7.8") // For extended icons
-
+            implementation(libs.kotlinx.datetime)
 
             // Splashscreen & Widget
             implementation(libs.androidx.core.splashscreen)

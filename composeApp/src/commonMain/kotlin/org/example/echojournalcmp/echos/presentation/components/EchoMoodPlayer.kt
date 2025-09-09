@@ -1,7 +1,6 @@
 package org.example.echojournalcmp.echos.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,21 +16,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import echojournalcmp.composeapp.generated.resources.Res
 import org.example.echojournalcmp.core.presentation.designsystem.theme.MoodPrimary25
 import org.example.echojournalcmp.core.presentation.designsystem.theme.MoodPrimary35
 import org.example.echojournalcmp.core.presentation.designsystem.theme.MoodPrimary80
 import org.example.echojournalcmp.core.presentation.util.defaultShadow
-import org.example.echojournalcmp.echos.presentation.PlaybackState
+import org.example.echojournalcmp.echos.presentation.echos.model.PlaybackState
+import org.example.echojournalcmp.echos.presentation.echos.model.TrackSizeInfo
 import org.example.echojournalcmp.echos.presentation.model.MoodUi
-import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.random.Random
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -44,9 +40,10 @@ fun EchoMoodPlayer(
     powerRatios: List<Float>,
     onPlayClick: () -> Unit,
     onPauseClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    onTrackSizeAvailable: (TrackSizeInfo) -> Unit,
     amplitudeBarWidth: Dp = 5.dp,
-    amplitudeBarSpacing: Dp = 4.dp
+    amplitudeBarSpacing: Dp = 4.dp,
+    modifier: Modifier = Modifier,
 ) {
     val iconTint = when (moodUi) {
         null -> MoodPrimary80
@@ -140,6 +137,7 @@ fun EchoMoodPlayerPreview() {
         onPauseClick = {},
         modifier = Modifier,
         amplitudeBarWidth = 5.dp,
-        amplitudeBarSpacing = 4.dp
+        amplitudeBarSpacing = 4.dp,
+        onTrackSizeAvailable = {}
     )
 }

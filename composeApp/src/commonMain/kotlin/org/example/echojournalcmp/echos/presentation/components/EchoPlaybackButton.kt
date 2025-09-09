@@ -14,7 +14,7 @@ import echojournalcmp.composeapp.generated.resources.play
 import echojournalcmp.composeapp.generated.resources.playing
 import echojournalcmp.composeapp.generated.resources.stopped
 import org.example.echojournalcmp.core.presentation.util.defaultShadow
-import org.example.echojournalcmp.echos.presentation.PlaybackState
+import org.example.echojournalcmp.echos.presentation.echos.model.PlaybackState
 import org.example.echojournalcmp.echos.presentation.model.MoodUi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
