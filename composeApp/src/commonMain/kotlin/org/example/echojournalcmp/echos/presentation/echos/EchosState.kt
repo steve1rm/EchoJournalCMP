@@ -5,11 +5,14 @@ import echojournalcmp.composeapp.generated.resources.all_topics
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable.Companion.asUnselectedItems
 import org.example.echojournalcmp.core.presentation.util.UiText
+import org.example.echojournalcmp.echos.presentation.echos.model.EchoDaySection
 import org.example.echojournalcmp.echos.presentation.model.MoodUi
 import org.example.echojournalcmp.echos.presentation.echos.model.EchoFilterChip
 import org.example.echojournalcmp.echos.presentation.echos.model.MoodChipContent
+import org.example.echojournalcmp.echos.presentation.model.EchoUi
 
 data class EchosState(
+    val echos: Map<UiText, List<EchoUi>> = emptyMap(),
     val hasEchosRecorded: Boolean = false,
     val hasActiveTopicFilters: Boolean = false,
     val hasActiveMoodFilters: Boolean = false,
@@ -18,5 +21,14 @@ data class EchosState(
     val topics: List<Selectable<String>> = listOf("Love", "Happy", "Work", "Travel", "Family").asUnselectedItems(),
     val moodChipContent: MoodChipContent = MoodChipContent(),
     val selectedEchoFilterChip: EchoFilterChip? = null,
-    val topicChipTitle: UiText = UiText.LocalizedString(Res.string.all_topics)
+    val topicChipTitle: UiText = UiText.LocalizedString(Res.string.all_topics),
 )
+
+val EchosState.echoDaySections: List<EchoDaySection>
+    get() {
+        return this.echos
+            .toList()
+            .map { (dateHeader, echoes) ->
+                EchoDaySection(dateHeader, echoes)
+            }
+    }

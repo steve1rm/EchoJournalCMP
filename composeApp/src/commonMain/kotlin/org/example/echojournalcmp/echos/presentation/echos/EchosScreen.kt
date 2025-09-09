@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import org.example.echojournalcmp.core.presentation.designsystem.theme.EchoJournalCMPTheme
 import org.example.echojournalcmp.core.presentation.designsystem.theme.bgGradient
 import org.example.echojournalcmp.echos.presentation.echos.components.EchoFilterRow
+import org.example.echojournalcmp.echos.presentation.echos.components.EchoList
 import org.example.echojournalcmp.echos.presentation.echos.components.EchoRecordFloatingActionButton
 import org.example.echojournalcmp.echos.presentation.echos.components.EchosEmptyBackground
 import org.example.echojournalcmp.echos.presentation.echos.components.EchosTopBar
@@ -76,6 +77,20 @@ fun EchosScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()
+                        )
+                    }
+                    else -> {
+                        EchoList(
+                            sections = state.echoDaySections,
+                            onPlayClick = {
+                                onAction(EchosAction.OnPlayEchoClick(it))
+                            },
+                            onPauseClick = {
+                                onAction(EchosAction.OnPauseClick)
+                            },
+                            onTrackSizeAvailable = { trackSize ->
+                                onAction(EchosAction.OnTrackSizeAvailable(trackSize))
+                            }
                         )
                     }
                 }
