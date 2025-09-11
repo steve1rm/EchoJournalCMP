@@ -33,51 +33,41 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(project.dependencies.platform(libs.androidx.compose.bom))
+            implementation(libs.androidx.ui.tooling.preview)
+            // Android specific libs
+            implementation(libs.androidx.core.ktx)
+            implementation(libs.androidx.core.splashscreen)
+            implementation(libs.androidx.lifecycle.runtime.ktx)
+            implementation(libs.androidx.lifecycle.process)
+            // Widgets
+            implementation(libs.bundles.widget.glance)
+            // Database - Room
+            implementation(libs.room.ktx)
+            implementation(libs.room.runtime)
+            // Koin for Android
+            implementation(libs.bundles.koin)
+            implementation(libs.androidx.material.icons.core)
+            implementation(libs.androidx.material.icons.extended)
+            implementation(libs.androidx.ui.graphics)
+            implementation(libs.androidx.compose.navigation)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
-            implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.ui)
+
+
             implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
-            implementation(libs.androidx.core.ktx)
-            implementation(libs.androidx.lifecycle.runtime.ktx)
-            implementation(libs.androidx.lifecycle.process)
-            implementation(libs.androidx.activity.compose)
-            implementation(project.dependencies.platform(libs.androidx.compose.bom))
-            implementation(libs.androidx.ui)
-            implementation(libs.androidx.ui.graphics)
-            implementation(libs.androidx.ui.tooling.preview)
-            implementation(libs.androidx.material3)
-            implementation("androidx.compose.material:material-icons-core:1.7.8") // Or the latest version
-            implementation("androidx.compose.material:material-icons-extended:1.7.8") // For extended icons
             implementation(libs.kotlinx.datetime)
-
-            // Splashscreen & Widget
-            implementation(libs.androidx.core.splashscreen)
-            implementation(libs.bundles.widget.glance)
-
-            // Database - Room
-            implementation(libs.room.ktx)
-            implementation(libs.room.runtime)
-
-            // DI - Koin
-            implementation(libs.bundles.koin)
-
-            // Navigation
-            implementation(libs.androidx.compose.navigation)
             implementation(libs.kotlinx.serialization.json)
-
-            // Allow use of java.time.Instant below API 26
-            // coreLibraryDesugaring(libs.desugar.jdk.libs)
-
-            // Logging
             implementation(libs.kermit)
 
+            implementation(libs.koin.core)
+            implementation(libs.koin.androidx.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
