@@ -4,27 +4,28 @@ import kotlinx.coroutines.flow.StateFlow
 import org.example.echojournalcmp.echos.domain.recording.RecordingDetails
 import org.example.echojournalcmp.echos.domain.recording.VoiceRecorder
 
-class AndroidVoiceRecorder : VoiceRecorder {
-    override val recordingDetails: StateFlow<RecordingDetails>
+actual class VoiceRecorderImp : VoiceRecorder {
+    actual override val recordingDetails: StateFlow<RecordingDetails>
         get() = TODO("Not yet implemented")
 
-    override fun start() {
+    actual override fun start() {
         TODO("Not yet implemented")
     }
 
-    override fun pause() {
+    actual override fun pause() {
         TODO("Not yet implemented")
     }
 
-    override fun stop() {
+    actual override fun stop() {
         TODO("Not yet implemented")
     }
 
-    override fun resume() {
+    actual override fun resume() {
         TODO("Not yet implemented")
     }
 
-    override fun cancel() {
+    actual override fun cancel() {
         TODO("Not yet implemented")
     }
+
 }
