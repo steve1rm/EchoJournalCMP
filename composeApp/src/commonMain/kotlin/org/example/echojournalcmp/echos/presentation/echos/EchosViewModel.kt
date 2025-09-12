@@ -1,13 +1,17 @@
 package org.example.echojournalcmp.echos.presentation.echos
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import echojournalcmp.composeapp.generated.resources.Res
 import echojournalcmp.composeapp.generated.resources.all_topics
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable
@@ -21,6 +25,8 @@ class EchosViewModel : ViewModel() {
     private var hasLoadedInitialData = false
     private val selectedMoodFilters = MutableStateFlow<List<MoodUi>>(emptyList())
     private val selectedTopicFilters = MutableStateFlow<List<String>>(emptyList())
+    private val echoChannel = Channel<EchoEvents>()
+    val echoEvents = echoChannel.receiveAsFlow()
 
     private val _state = MutableStateFlow(EchosState())
     val state = _state
@@ -40,7 +46,7 @@ class EchosViewModel : ViewModel() {
         fun onAction(action: EchosAction) {
             when(action) {
                 EchosAction.OnFabClick -> {
-
+                    echoChannel.trySend(EchoEvents.RequestAudioPermission)
                 }
                 EchosAction.OnFabLongClick -> {
 
@@ -98,6 +104,13 @@ class EchosViewModel : ViewModel() {
                 }
                 is EchosAction.OnTrackSizeAvailable -> {
 
+                }
+
+                EchosAction.OnAudioPermissionGranted -> {
+                    Logger.d(
+                        tag = EchosViewModel::class.toString(),
+                        messageString = "Recording has been started"
+                    )
                 }
             }
         }
