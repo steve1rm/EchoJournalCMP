@@ -3,7 +3,9 @@ package org.example.echojournalcmp.echos.presentation.echos
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalContext
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,14 +30,15 @@ fun EchosScene() {
         })
     BindEffect(permissionsViewModel.permissionsController)
 
-    if(permissionsViewModel.permissionState == PermissionState.Granted) {
-        echosViewModel.onAction(EchosAction.OnAudioPermissionGranted)
-    }
-
     ObserveAsEvents(echosViewModel.echoEvents) { events ->
         when(events) {
             EchoEvents.RequestAudioPermission -> {
-                permissionsViewModel.provideOrRequestCameraPermission()
+                if(permissionsViewModel.permissionState == PermissionState.Granted) {
+                    echosViewModel.onAction(EchosAction.OnAudioPermissionGranted)
+                }
+                else {
+                    permissionsViewModel.provideOrRequestCameraPermission()
+                }
             }
 
             EchoEvents.RecordingCompleted -> {
