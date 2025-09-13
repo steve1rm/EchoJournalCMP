@@ -13,11 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.example.echojournalcmp.core.presentation.designsystem.theme.EchoJournalCMPTheme
 import org.example.echojournalcmp.core.presentation.designsystem.theme.bgGradient
+import org.example.echojournalcmp.echos.presentation.components.EchoRecordingSheet
 import org.example.echojournalcmp.echos.presentation.echos.components.EchoFilterRow
 import org.example.echojournalcmp.echos.presentation.echos.components.EchoList
 import org.example.echojournalcmp.echos.presentation.echos.components.EchoRecordFloatingActionButton
 import org.example.echojournalcmp.echos.presentation.echos.components.EchosEmptyBackground
 import org.example.echojournalcmp.echos.presentation.echos.components.EchosTopBar
+import org.example.echojournalcmp.echos.presentation.echos.model.RecordingState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -86,7 +88,7 @@ fun EchosScreen(
                                 onAction(EchosAction.OnPlayEchoClick(it))
                             },
                             onPauseClick = {
-                                onAction(EchosAction.OnPauseClick)
+                                onAction(EchosAction.OnPausedRecordingClick)
                             },
                             onTrackSizeAvailable = { trackSize ->
                                 onAction(EchosAction.OnTrackSizeAvailable(trackSize))
@@ -94,6 +96,25 @@ fun EchosScreen(
                         )
                     }
                 }
+            }
+
+            if(state.recordingState in listOf(RecordingState.NORMAL_CAPTURE, RecordingState.PAUSED)) {
+                EchoRecordingSheet(
+                    formattedRecordDuration = state.formattedRecordDuration,
+                    isRecording = state.recordingState == RecordingState.NORMAL_CAPTURE,
+                    onDismiss = {
+                        onAction(EchosAction.OnCancelRecording)
+                    },
+                    onPauseClick = {
+                        onAction(EchosAction.OnPausedRecordingClick)
+                    },
+                    onResumeClick = {
+                        onAction(EchosAction.OnResumedRecordingClick)
+                    },
+                    onCompleteRecording = {
+                        onAction(EchosAction.OnCompletedRecording)
+                    }
+                )
             }
         }
     )

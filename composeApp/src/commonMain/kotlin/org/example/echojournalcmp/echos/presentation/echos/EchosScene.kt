@@ -1,10 +1,13 @@
 package org.example.echojournalcmp.echos.presentation.echos
 
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import co.touchlab.kermit.Logger
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.compose.BindEffect
@@ -33,6 +36,18 @@ fun EchosScene() {
         when(events) {
             EchoEvents.RequestAudioPermission -> {
                 permissionsViewModel.provideOrRequestCameraPermission()
+            }
+
+            EchoEvents.RecordingCompleted -> {
+                Logger.d {
+                    "Recording Completed"
+                }
+
+            }
+            EchoEvents.RecordingToShort -> {
+                Logger.d {
+                    "Recording too short"
+                }
             }
         }
     }

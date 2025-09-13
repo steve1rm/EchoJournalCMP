@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package org.example.echojournalcmp.echos
+package org.example.echojournalcmp.echos.presentation.components
 
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
@@ -32,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter.Companion.tint
 import androidx.compose.ui.unit.dp
 import echojournalcmp.composeapp.generated.resources.Res
 import echojournalcmp.composeapp.generated.resources.cancel
