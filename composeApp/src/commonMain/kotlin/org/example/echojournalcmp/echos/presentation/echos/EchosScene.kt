@@ -16,6 +16,8 @@ import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import org.example.echojournalcmp.core.presentation.util.ObserveAsEvents
 import org.example.echojournalcmp.echos.presentation.PermissionsViewModel
+import org.example.echojournalcmp.echos.presentation.echos.model.RecordingState
+import org.example.echojournalcmp.isAppInForeground
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -52,6 +54,13 @@ fun EchosScene() {
                     "Recording too short"
                 }
             }
+        }
+    }
+
+    val isAppInBackground by isAppInForeground()
+    LaunchedEffect(isAppInBackground, state.recordingState) {
+        if(!isAppInBackground && state.recordingState == RecordingState.NORMAL_CAPTURE) {
+            echosViewModel.onAction(EchosAction.OnPausedRecordingClick)
         }
     }
 

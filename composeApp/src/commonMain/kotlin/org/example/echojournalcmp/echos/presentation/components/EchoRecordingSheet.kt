@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import echojournalcmp.composeapp.generated.resources.Res
 import echojournalcmp.composeapp.generated.resources.cancel
@@ -112,9 +114,13 @@ fun SheetContent(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
+            modifier = Modifier.defaultMinSize(minWidth = 100.dp),
             text = formattedRecordDuration,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontFeatureSettings = "tnum",
+                textAlign = TextAlign.Center
+            ),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         Spacer(modifier = Modifier.height(8.dp))

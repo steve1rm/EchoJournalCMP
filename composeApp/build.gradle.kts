@@ -60,7 +60,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(compose.ui)
 
-
+            implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)

@@ -44,9 +44,10 @@ val EchosState.echoDaySections: List<EchoDaySection>
 
 val EchosState.formattedRecordDuration: String
     get() {
-        val minutes = (this.recordingElapsedDuration.inWholeMilliseconds % 60).toInt()
+        val minutes = (this.recordingElapsedDuration.inWholeMinutes.toInt())
         val seconds = (this.recordingElapsedDuration.inWholeSeconds % 60).toInt()
         val centiseconds = ((this.recordingElapsedDuration.inWholeMilliseconds % 1000) / 10.0).roundToInt()
 
         return "${minutes.pad()}:${seconds.pad()}:${centiseconds.pad()}"
     }
+

@@ -1,5 +1,6 @@
 package org.example.echojournalcmp
 
+import androidx.compose.runtime.State
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {
@@ -7,3 +8,7 @@ class IOSPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
+
+actual fun isAppInForeground(): State<Boolean> {
+    TODO()
+}
