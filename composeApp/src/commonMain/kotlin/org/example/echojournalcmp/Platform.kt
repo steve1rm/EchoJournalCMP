@@ -1,5 +1,7 @@
 package org.example.echojournalcmp
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import kotlinx.coroutines.flow.StateFlow
 import org.example.echojournalcmp.echos.domain.recording.RecordingDetails
 import org.example.echojournalcmp.echos.domain.recording.VoiceRecorder
@@ -18,3 +20,6 @@ expect class VoiceRecorderImp : VoiceRecorder {
     override fun resume()
     override fun cancel()
 }
+
+@Composable
+expect fun isAppInForeground() : State<Boolean>

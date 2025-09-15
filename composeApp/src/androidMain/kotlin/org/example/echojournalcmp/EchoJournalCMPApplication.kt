@@ -14,7 +14,8 @@ class EchoJournalCMPApplication : Application() {
             config = {
                 this.androidLogger(Level.DEBUG)
                 this.androidContext(this@EchoJournalCMPApplication)
-            }
+            },
+            platformSpecificModules = arrayOf(androidSpecificModule)
         )
     }
 }

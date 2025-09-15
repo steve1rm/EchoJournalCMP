@@ -16,6 +16,10 @@ sealed interface EchosAction {
     data object OnSettingsClick : EchosAction
     data class OnRemoveFilters(val filterType: EchoFilterChip) : EchosAction
     data class OnPlayEchoClick(val id: Int) : EchosAction
-    data object OnPauseClick : EchosAction
+    data object OnPausedRecordingClick : EchosAction
+    data object OnResumedRecordingClick : EchosAction
     data class OnTrackSizeAvailable(val trackSize: TrackSizeInfo) : EchosAction
+    data object OnAudioPermissionGranted : EchosAction
+    data object OnCancelRecording : EchosAction
+    data object OnCompletedRecording : EchosAction
 }

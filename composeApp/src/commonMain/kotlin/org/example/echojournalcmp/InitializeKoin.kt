@@ -1,5 +1,6 @@
 package org.example.echojournalcmp
 
+import org.example.echojournalcmp.di.appModule
 import org.example.echojournalcmp.di.echoJournalModule
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -14,6 +15,7 @@ fun initializeKoin(
         config?.invoke(this)
         modules(
             echoJournalModule,
+            appModule,
             *platformSpecificModules
         )
     }

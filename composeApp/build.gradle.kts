@@ -60,12 +60,14 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(compose.ui)
 
-
+            implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kermit)
-
+            implementation(libs.moko.permissions)
+            implementation(libs.moko.permissions.compose)
+            implementation(libs.moko.permissions.microphone)
             implementation(libs.koin.core)
             implementation(libs.koin.androidx.compose)
         }
