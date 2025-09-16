@@ -16,7 +16,7 @@ import org.example.echojournalcmp.core.presentation.designsystem.theme.bgGradien
 import org.example.echojournalcmp.echos.presentation.components.EchoRecordingSheet
 import org.example.echojournalcmp.echos.presentation.echos.components.EchoFilterRow
 import org.example.echojournalcmp.echos.presentation.echos.components.EchoList
-import org.example.echojournalcmp.echos.presentation.echos.components.EchoRecordFloatingActionButton
+import org.example.echojournalcmp.echos.presentation.echos.components.EchoQuickRecordFloatingActionButton
 import org.example.echojournalcmp.echos.presentation.echos.components.EchosEmptyBackground
 import org.example.echojournalcmp.echos.presentation.echos.components.EchosTopBar
 import org.example.echojournalcmp.echos.presentation.echos.model.RecordingState
@@ -37,9 +37,21 @@ fun EchosScreen(
             )
         },
         floatingActionButton = {
-            EchoRecordFloatingActionButton(
+            EchoQuickRecordFloatingActionButton(
                 onClick = {
-                    onAction(EchosAction.OnFabClick)
+                    onAction(EchosAction.OnRecordFabClick)
+                },
+                isQuickRecording = state.recordingState == RecordingState.QUICK_CAPTURE,
+                onLongPressEnd = { cancelledRecording ->
+                    if(cancelledRecording) {
+                        onAction(EchosAction.OnCancelRecording)
+                    }
+                    else {
+                        onAction(EchosAction.OnCompletedRecording)
+                    }
+                },
+                onLongPressStart = {
+                    // check permissions
                 }
             )
         },
@@ -85,7 +97,7 @@ fun EchosScreen(
                         EchoList(
                             sections = state.echoDaySections,
                             onPlayClick = {
-                                onAction(EchosAction.OnPlayEchoClick(it))
+              //                  onAction(EchosAction.OnPlayEchoClick(it))
                             },
                             onPauseClick = {
                                 onAction(EchosAction.OnPausedRecordingClick)

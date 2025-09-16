@@ -8,7 +8,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -115,7 +114,7 @@ class EchosViewModel(
                 EchosAction.OnPausedRecordingClick -> {
                     pauseRecording()
                 }
-                is EchosAction.OnPlayEchoClick -> {
+                is EchosAction.OnRecordFabClick -> {
 
                 }
                 is EchosAction.OnTrackSizeAvailable -> {
@@ -139,6 +138,9 @@ class EchosViewModel(
                 EchosAction.OnResumedRecordingClick -> {
                     resumeRecording()
                 }
+
+                EchosAction.OnRecordButtonLongClick -> TODO()
+                EchosAction.OnRequestPermissionQuickRecording -> TODO()
             }
         }
 

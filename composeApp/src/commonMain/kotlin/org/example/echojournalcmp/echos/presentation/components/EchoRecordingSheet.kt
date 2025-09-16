@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -41,10 +42,12 @@ import echojournalcmp.composeapp.generated.resources.Res
 import echojournalcmp.composeapp.generated.resources.cancel
 import echojournalcmp.composeapp.generated.resources.check
 import echojournalcmp.composeapp.generated.resources.close
+import echojournalcmp.composeapp.generated.resources.finish_recording
 import echojournalcmp.composeapp.generated.resources.mic
 import echojournalcmp.composeapp.generated.resources.pause
 import echojournalcmp.composeapp.generated.resources.paused
 import echojournalcmp.composeapp.generated.resources.recording_your_memories
+import echojournalcmp.composeapp.generated.resources.resume_recording
 import org.example.echojournalcmp.core.presentation.designsystem.theme.EchoJournalCMPTheme
 import org.example.echojournalcmp.core.presentation.designsystem.theme.buttonGradient
 import org.example.echojournalcmp.core.presentation.designsystem.theme.buttonGradientPressed
@@ -135,6 +138,46 @@ fun SheetContent(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
+
+            FilledIconButton(
+                modifier = Modifier
+                    .size(secondaryBubbleSize),
+                onClick = onDismiss,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                )
+            ) {
+                Icon(
+                    imageVector = vectorResource(Res.drawable.close),
+                    contentDescription = stringResource(Res.string.cancel)
+                )
+            }
+
+            EchoBubbleFloatingActionButton(
+                showBubble = isRecording,
+                onClick = if(isRecording) {
+                    onCompleteRecording
+                }
+                else {
+                    onResumeClick
+                },
+                icon = {
+                    Icon(
+                        imageVector = if(isRecording) {
+                            vectorResource(Res.drawable.check)
+                        } else vectorResource(Res.drawable.mic),
+                        contentDescription = if(isRecording) {
+                            stringResource(Res.string.finish_recording)
+                        } else {
+                            stringResource(Res.string.resume_recording)
+                        },
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                },
+                primaryButtonSize = 72.dp
+            )
+
             FilledIconButton(
                 modifier = Modifier
                     .size(secondaryBubbleSize),
