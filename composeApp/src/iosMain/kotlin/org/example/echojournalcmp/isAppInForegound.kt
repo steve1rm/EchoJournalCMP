@@ -5,7 +5,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSNotificationCenter
-import platform.Foundation.NSNotificationName
 import platform.UIKit.UIApplicationDidBecomeActiveNotification
 import platform.UIKit.UIApplicationDidEnterBackgroundNotification
 import platform.darwin.NSObject
