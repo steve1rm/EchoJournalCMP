@@ -53,6 +53,7 @@ import org.example.echojournalcmp.core.presentation.designsystem.theme.buttonGra
 import org.example.echojournalcmp.core.presentation.designsystem.theme.buttonGradientPressed
 import org.example.echojournalcmp.core.presentation.designsystem.theme.primary90
 import org.example.echojournalcmp.core.presentation.designsystem.theme.primary95
+import org.example.echojournalcmp.echos.presentation.echos.components.EchoBubbleFloatingActionButton
 import org.example.echojournalcmp.echos.presentation.echos.model.BubbleFloatingActionButtonColors
 import org.example.echojournalcmp.echos.presentation.echos.model.rememberBubbleFloatingActionButtonColors
 import org.jetbrains.compose.resources.stringResource
@@ -181,79 +182,6 @@ fun SheetContent(
             FilledIconButton(
                 modifier = Modifier
                     .size(secondaryBubbleSize),
-                onClick = onDismiss,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer
-                )
-            ) {
-                Icon(
-                    imageVector = vectorResource(Res.drawable.close),
-                    contentDescription = stringResource(Res.string.cancel)
-                )
-            }
-
-            val interactionSource = remember {
-                MutableInteractionSource()
-            }
-            val isPressed by interactionSource.collectIsPressedAsState()
-
-            Box(
-                modifier = Modifier
-                    .size(primaryBubbleSize)
-                    .background(
-                        color = if(isRecording) {
-                            MaterialTheme.colorScheme.primary95
-                        }
-                        else {
-                            Color.Transparent
-                        },
-                        shape = CircleShape
-                    )
-                    .padding(10.dp)
-                    .background(
-                        color = if(isRecording) {
-                            MaterialTheme.colorScheme.primary90
-                        }
-                        else {
-                            Color.Transparent
-                        },
-                        shape = CircleShape
-                    )
-                    .padding(16.dp)
-                    .background(
-                        brush = if(isPressed)
-                            MaterialTheme.colorScheme.buttonGradientPressed
-                        else MaterialTheme.colorScheme.buttonGradient,
-                        shape = CircleShape
-                    )
-                    .padding(16.dp)
-                    .clip(CircleShape)
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = LocalIndication.current,
-                        onClick = if(isRecording) {
-                            onCompleteRecording
-                        }
-                        else {
-                            onResumeClick
-                        }
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    modifier = Modifier.size(38.dp),
-                    imageVector = if(isRecording)
-                        vectorResource(Res.drawable.check)
-                    else vectorResource(Res.drawable.mic),
-                    contentDescription = "Pause or resume",
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-
-            IconButton(
-                modifier = Modifier
-                    .size(secondaryBubbleSize),
                 onClick = if(isRecording) onPauseClick else onCompleteRecording,
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -271,61 +199,7 @@ fun SheetContent(
     }
 }
 
-@Composable
-fun EchoBubbleFloatingActionButton(
-    showBubble: Boolean,
-    onClick: () -> Unit,
-    icon: @Composable () -> Unit,
-    primaryButtonSize: Dp = 56.dp,
-    colors: BubbleFloatingActionButtonColors = rememberBubbleFloatingActionButtonColors(),
-    modifier: Modifier = Modifier
-) {
-    val interactionSource = remember {
-        MutableInteractionSource()
-    }
 
-    val isPressed by interactionSource.collectIsPressedAsState()
-
-    Box(
-        modifier = modifier
-            .background(
-                brush = if(showBubble) {
-                    colors.outerCircle
-                }
-                else {
-                    SolidColor(Color.Transparent)
-                },
-                shape = CircleShape
-            )
-            .padding(10.dp)
-            .background(
-                brush = if(isPressed) {
-                    colors.primaryPressed
-                }
-                else {
-                    SolidColor(Color.Transparent)
-                },
-                shape = CircleShape
-            )
-            .padding(16.dp)
-            .background(
-                brush = if(isPressed)
-                    MaterialTheme.colorScheme.buttonGradientPressed
-                else MaterialTheme.colorScheme.buttonGradient,
-                shape = CircleShape
-            )
-            .size(primaryButtonSize)
-            .clip(CircleShape)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = LocalIndication.current,
-                onClick = onClick
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        icon()
-    }
-}
 
 @Preview
 @Composable

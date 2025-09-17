@@ -42,6 +42,9 @@ fun EchosScreen(
                     onAction(EchosAction.OnRecordFabClick)
                 },
                 isQuickRecording = state.recordingState == RecordingState.QUICK_CAPTURE,
+                onLongPressStart = {
+                    onAction(EchosAction.OnRequestPermissionQuickRecording)
+                },
                 onLongPressEnd = { cancelledRecording ->
                     if(cancelledRecording) {
                         onAction(EchosAction.OnCancelRecording)
@@ -49,11 +52,7 @@ fun EchosScreen(
                     else {
                         onAction(EchosAction.OnCompletedRecording)
                     }
-                },
-                onLongPressStart = {
-                    // check permissions
-                }
-            )
+                })
         },
         content = { innerPadding ->
             Column(
@@ -96,8 +95,8 @@ fun EchosScreen(
                     else -> {
                         EchoList(
                             sections = state.echoDaySections,
-                            onPlayClick = {
-              //                  onAction(EchosAction.OnPlayEchoClick(it))
+                            onPlayClick = { echoId ->
+                                onAction(EchosAction.OnPlayEchoClick(echoId))
                             },
                             onPauseClick = {
                                 onAction(EchosAction.OnPausedRecordingClick)

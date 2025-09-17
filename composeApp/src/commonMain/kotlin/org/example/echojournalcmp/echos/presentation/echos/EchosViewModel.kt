@@ -58,14 +58,6 @@ class EchosViewModel(
         
         fun onAction(action: EchosAction) {
             when(action) {
-                EchosAction.OnFabClick -> {
-                    viewModelScope.launch {
-                        echoChannel.send(EchoEvents.RequestAudioPermission)
-                    }
-                }
-                EchosAction.OnFabLongClick -> {
-
-                }
                 is EchosAction.OnRemoveFilters -> {
                     when(action.filterType) {
                         EchoFilterChip.MOODS -> {
@@ -115,7 +107,9 @@ class EchosViewModel(
                     pauseRecording()
                 }
                 is EchosAction.OnRecordFabClick -> {
-
+                    viewModelScope.launch {
+                        echoChannel.send(EchoEvents.RequestAudioPermission)
+                    }
                 }
                 is EchosAction.OnTrackSizeAvailable -> {
 
@@ -141,6 +135,7 @@ class EchosViewModel(
 
                 EchosAction.OnRecordButtonLongClick -> TODO()
                 EchosAction.OnRequestPermissionQuickRecording -> TODO()
+                is EchosAction.OnPlayEchoClick -> TODO()
             }
         }
 
