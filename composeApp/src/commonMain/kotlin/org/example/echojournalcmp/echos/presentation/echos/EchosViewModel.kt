@@ -133,8 +133,14 @@ class EchosViewModel(
                     resumeRecording()
                 }
 
-                EchosAction.OnRecordButtonLongClick -> TODO()
-                EchosAction.OnRequestPermissionQuickRecording -> TODO()
+                EchosAction.OnRecordButtonLongClick -> {
+                    startRecording(captureMethod = AudioCaptureMethod.QUICK)
+                }
+                EchosAction.OnRequestPermissionQuickRecording -> {
+                    viewModelScope.launch {
+                        echoChannel.send(EchoEvents.RequestAudioPermission)
+                    }
+                }
                 is EchosAction.OnPlayEchoClick -> TODO()
             }
         }

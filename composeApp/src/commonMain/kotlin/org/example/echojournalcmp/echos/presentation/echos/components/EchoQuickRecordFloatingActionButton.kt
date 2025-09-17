@@ -3,6 +3,7 @@ package org.example.echojournalcmp.echos.presentation.echos.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -128,7 +129,8 @@ fun EchoQuickRecordFloatingActionButton(
                     .offset(x = cancelButtonOffset)
                     .size(48.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.errorContainer)
+                    .background(MaterialTheme.colorScheme.errorContainer),
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = vectorResource(Res.drawable.close),
@@ -137,42 +139,49 @@ fun EchoQuickRecordFloatingActionButton(
                 )
             }
         }
-    }
 
-    EchoBubbleFloatingActionButton(
-        modifier = Modifier
-            .offset { fabPositionOffset },
-        showBubble = isQuickRecording,
-        onClick = onClick,
-        icon = {
-            Icon(
-                imageVector = if(isQuickRecording) vectorResource(Res.drawable.mic) else vectorResource(Res.drawable.add),
-                contentDescription = stringResource(Res.string.recording_your_memories),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
+        EchoBubbleFloatingActionButton(
+            modifier = Modifier
+                .offset { fabPositionOffset },
+            showBubble = isQuickRecording,
+            onClick = onClick,
+            icon = {
+                Icon(
+                    imageVector = if(isQuickRecording) vectorResource(Res.drawable.mic) else vectorResource(Res.drawable.add),
+                    contentDescription = stringResource(Res.string.recording_your_memories),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            },
+            colors = rememberBubbleFloatingActionButtonColors(
+                primary = if(isWithinCancelThreshold) {
+                    SolidColor(Color.Red)
+                }
+                else MaterialTheme.colorScheme.buttonGradient,
+                primaryPressed = MaterialTheme.colorScheme.buttonGradientPressed,
+                outerCircle = if(isWithinCancelThreshold) {
+                    SolidColor(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f))
+                }
+                else SolidColor(MaterialTheme.colorScheme.primary95),
+                innerCircle = if(isWithinCancelThreshold) {
+                    SolidColor(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f))
+                }
+                else SolidColor(MaterialTheme.colorScheme.primary90),
             )
-        },
-        colors = rememberBubbleFloatingActionButtonColors(
-            primary = if(isWithinCancelThreshold) {
-                SolidColor(Color.Red)
-            }
-            else MaterialTheme.colorScheme.buttonGradient,
-            primaryPressed = MaterialTheme.colorScheme.buttonGradientPressed,
-            outerCircle = if(isWithinCancelThreshold) {
-                SolidColor(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f))
-            }
-            else SolidColor(MaterialTheme.colorScheme.primary95),
-            innerCircle = if(isWithinCancelThreshold) {
-                SolidColor(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f))
-            }
-            else SolidColor(MaterialTheme.colorScheme.primary90),
         )
-    )
+    }
 }
 
 @Preview
 @Composable
 fun EchoQuickRecordFloatingActionButtonPreview() {
     EchoJournalCMPTheme {
-        EchoRecordFloatingActionButton(onClick = {})
+        EchoQuickRecordFloatingActionButton(
+            isQuickRecording = true,
+            onClick = {},
+            onLongPressStart = {},
+            onLongPressEnd = {},
+            modifier = Modifier
+                .fillMaxSize()
+        )
     }
 }
