@@ -177,7 +177,7 @@ class EchosViewModel(
         }
         else {
             viewModelScope.launch {
-                echoChannel.send(EchoEvents.RecordingCompleted)
+                echoChannel.send(EchoEvents.RecordingCompleted(recordingDetails))
             }
             _state.update { it.copy(
                 recordingState = RecordingState.NOT_RECORDING

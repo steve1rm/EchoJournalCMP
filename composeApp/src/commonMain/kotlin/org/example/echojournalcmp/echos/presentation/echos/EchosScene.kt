@@ -15,13 +15,16 @@ import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import org.example.echojournalcmp.core.presentation.util.ObserveAsEvents
+import org.example.echojournalcmp.echos.domain.recording.RecordingDetails
 import org.example.echojournalcmp.echos.presentation.PermissionsViewModel
 import org.example.echojournalcmp.echos.presentation.echos.model.RecordingState
 import org.example.echojournalcmp.isAppInForeground
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun EchosScene() {
+fun EchosScene(
+    onNavigateToCreateEcho: (recordingDetails: RecordingDetails) -> Unit
+) {
     val echosViewModel = koinViewModel<EchosViewModel>()
     val state by echosViewModel.state.collectAsStateWithLifecycle()
 
@@ -42,17 +45,14 @@ fun EchosScene() {
                     permissionsViewModel.provideOrRequestCameraPermission()
                 }
             }
-
-            EchoEvents.RecordingCompleted -> {
-                Logger.d {
-                    "Recording Completed"
-                }
-
-            }
             EchoEvents.RecordingToShort -> {
                 Logger.d {
                     "Recording too short"
                 }
+            }
+
+            is EchoEvents.RecordingCompleted -> {
+                onNavigateToCreateEcho(events.recordingDetails)
             }
         }
     }

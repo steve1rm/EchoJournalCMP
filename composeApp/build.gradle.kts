@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.serialization)
 }
 
 kotlin {
@@ -50,7 +51,6 @@ kotlin {
             implementation(libs.androidx.material.icons.core)
             implementation(libs.androidx.material.icons.extended)
             implementation(libs.androidx.ui.graphics)
-            implementation(libs.androidx.compose.navigation)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -70,6 +70,7 @@ kotlin {
             implementation(libs.moko.permissions.microphone)
             implementation(libs.koin.core)
             implementation(libs.koin.androidx.compose)
+            implementation(libs.androidx.compose.navigation)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
