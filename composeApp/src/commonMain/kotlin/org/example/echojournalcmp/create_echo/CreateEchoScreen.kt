@@ -57,6 +57,7 @@ import org.example.echojournalcmp.core.presentation.designsystem.text_fields.Tra
 import org.example.echojournalcmp.core.presentation.designsystem.theme.EchoJournalCMPTheme
 import org.example.echojournalcmp.core.presentation.designsystem.theme.secondary70
 import org.example.echojournalcmp.core.presentation.designsystem.theme.secondary95
+import org.example.echojournalcmp.create_echo.components.SelectMoodSheet
 import org.example.echojournalcmp.echos.presentation.components.EchoMoodPlayer
 import org.example.echojournalcmp.echos.presentation.model.MoodUi
 import org.jetbrains.compose.resources.stringResource
@@ -99,7 +100,6 @@ fun CreateEchoScreen(
             }
 
             val focusManager = LocalFocusManager.current
-
 
             Column(
                 modifier = Modifier
@@ -254,6 +254,21 @@ fun CreateEchoScreen(
                         }
                     )
                 }
+            }
+
+            if(state.showMoodSelector) {
+                SelectMoodSheet(
+                    selectedMood = state.selectedMood,
+                    onMoodClick = { moodUi ->
+                        onAction(CreateEchoAction.OnMoodClick(moodUi))
+                    },
+                    onDismiss = {
+                        onAction(CreateEchoAction.OnDismissMoodSelector)
+                    },
+                    onConfirmClick = {
+                        onAction(CreateEchoAction.OnConfirmMood)
+                    }
+                )
             }
         }
     )

@@ -40,7 +40,7 @@ fun PrimaryButton(
             shape = CircleShape,
         ),
         onClick = onClick,
-        enabled = false,
+        enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = if(enabled) {
