@@ -106,6 +106,12 @@ val ColorScheme.primary95: Color
         return Primary95
     }
 
+val ColorScheme.secondary95: Color
+    get() {
+        return Secondary95
+    }
+
+
 val ColorScheme.secondary70: Color
     get() {
         return Secondary70

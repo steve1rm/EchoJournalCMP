@@ -2,6 +2,7 @@ package org.example.echojournalcmp.core.presentation.designsystem.buttons
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -29,8 +30,17 @@ fun PrimaryButton(
 ) {
 
     Button(
+        modifier = modifier.background(
+            brush = if(enabled) {
+                MaterialTheme.colorScheme.buttonGradient
+            }
+            else {
+                SolidColor(MaterialTheme.colorScheme.surfaceVariant)
+            },
+            shape = CircleShape,
+        ),
         onClick = onClick,
-        enabled = enabled,
+        enabled = false,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = if(enabled) {
@@ -40,15 +50,6 @@ fun PrimaryButton(
                 MaterialTheme.colorScheme.outline
             }
         ),
-        modifier = modifier.background(
-            brush = if(enabled) {
-                MaterialTheme.colorScheme.buttonGradient
-            }
-            else {
-                SolidColor(MaterialTheme.colorScheme.surfaceVariant)
-            },
-            shape = CircleShape
-        )
     ) {
         leadingIcon?.invoke()
 
@@ -73,7 +74,9 @@ fun PrimaryButtonPreview() {
             enabled = false,
             onClick = {},
             leadingIcon = {
-                Icon(imageVector = Microphone, contentDescription = null)
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    imageVector = Microphone, contentDescription = null)
             }
         )
     }

@@ -22,6 +22,7 @@ fun SecondaryButton(
 ) {
 
     Button(
+        modifier = modifier,
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
