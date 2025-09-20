@@ -1,12 +1,21 @@
+@file:OptIn(FlowPreview::class)
+
 package org.example.echojournalcmp.create_echo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable.Companion.asUnselectedItems
 import org.example.echojournalcmp.echos.presentation.model.MoodUi
 
 class CreateEchoViewModel : ViewModel() {
@@ -17,7 +26,7 @@ class CreateEchoViewModel : ViewModel() {
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
-                /** Load initial data here **/
+                observeAddTopicText()
                 hasLoadedInitialData = true
             }
         }
@@ -29,24 +38,64 @@ class CreateEchoViewModel : ViewModel() {
 
     fun onAction(action: CreateEchoAction) {
         when (action) {
-            is CreateEchoAction.OnAddTopicTextChange -> TODO()
+            is CreateEchoAction.OnAddTopicTextChange -> onAddTopicTextChange(action.text)
             CreateEchoAction.OnCancelClick -> TODO()
             CreateEchoAction.OnConfirmMood -> onConfirmMood()
-            CreateEchoAction.OnCreateNewTopicClick -> TODO()
             CreateEchoAction.OnDismissMoodSelector -> onDismissMoodSelector()
-            CreateEchoAction.OnDismissTopicSuggestions -> TODO()
+            CreateEchoAction.OnDismissTopicSuggestions -> onDismissTopicSuggestion()
             is CreateEchoAction.OnMoodClick -> onMoodClick(action.moodUi)
             CreateEchoAction.OnNavigateBackClick -> TODO()
             is CreateEchoAction.OnNoteTextChange -> TODO()
             CreateEchoAction.OnPauseAudioClick -> TODO()
             CreateEchoAction.OnPlayAudioClick -> TODO()
-            is CreateEchoAction.OnRemoveTopicClick -> TODO()
+            is CreateEchoAction.OnRemoveTopicClick -> onRemoveTopicClick(action.topic)
             CreateEchoAction.OnSaveClick -> TODO()
             CreateEchoAction.OnSelectMoodClick -> onSelectMoodClick()
             is CreateEchoAction.OnTitleTextChange -> TODO()
-            is CreateEchoAction.OnTopicClick -> TODO()
+            is CreateEchoAction.OnTopicClick -> onAddTopic(action.topic)
             is CreateEchoAction.OnTrackSizeAvailable -> TODO()
         }
+    }
+
+    private fun observeAddTopicText() {
+        state
+            .map { state.value.addTopicText }
+            .distinctUntilChanged()
+            .debounce(300)
+            .onEach { query ->
+                _state.update { it.copy(
+                    showTopicSuggestions = query.isNotBlank() && query.trim() !in state.value.topics,
+                    searchResults = listOf("hello", "hello World").asUnselectedItems()
+
+                ) }
+            }
+            .launchIn(viewModelScope)
+
+    }
+
+    private fun onDismissTopicSuggestion() {
+        _state.update { it.copy(
+            showTopicSuggestions = false
+        ) }
+    }
+
+    private fun onRemoveTopicClick(topic: String) {
+        _state.update { it.copy(
+            topics = state.value.topics - topic
+        ) }
+    }
+
+    private fun onAddTopic(topic: String) {
+        _state.update { it.copy(
+            addTopicText = "",
+            topics = (state.value.topics + topic).distinct()
+        ) }
+    }
+
+    private fun onAddTopicTextChange(text: String) {
+        _state.update { it.copy(
+            addTopicText = text.filter { text -> text.isLetterOrDigit() }
+        ) }
     }
 
     private fun onConfirmMood() {

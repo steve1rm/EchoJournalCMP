@@ -29,6 +29,7 @@ import androidx.compose.ui.window.Popup
 import echojournalcmp.composeapp.generated.resources.Res
 import echojournalcmp.composeapp.generated.resources.add
 import echojournalcmp.composeapp.generated.resources.check
+import echojournalcmp.composeapp.generated.resources.create_entry
 import echojournalcmp.composeapp.generated.resources.hashtag
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable.Companion.asUnselectedItems
 import org.jetbrains.compose.resources.stringResource
@@ -123,7 +124,7 @@ fun <T> SelectableDropdownOptionsMenu(
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(MaterialTheme.colorScheme.surface)
                                 .clickable {
-                                    dropDownExtra.onClick
+                                    dropDownExtra.onClick()
                                 },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -138,7 +139,7 @@ fun <T> SelectableDropdownOptionsMenu(
 
                             Text(
                                 modifier = Modifier.weight(1f),
-                                text = "Create entry",
+                                text = "${stringResource(Res.string.create_entry)} ${dropDownExtra.text}",
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }

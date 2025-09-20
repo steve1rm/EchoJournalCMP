@@ -2,6 +2,7 @@ package org.example.echojournalcmp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.ui.unit.Dp
 import kotlinx.coroutines.flow.StateFlow
 import org.example.echojournalcmp.echos.domain.recording.RecordingDetails
 import org.example.echojournalcmp.echos.domain.recording.VoiceRecorder
@@ -23,3 +24,5 @@ expect class VoiceRecorderImp : VoiceRecorder {
 
 @Composable
 expect fun isAppInForeground() : State<Boolean>
+
+expect val screenHeight: Int

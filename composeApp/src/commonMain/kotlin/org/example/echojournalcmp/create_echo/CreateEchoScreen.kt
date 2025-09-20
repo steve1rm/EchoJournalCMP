@@ -57,6 +57,7 @@ import org.example.echojournalcmp.core.presentation.designsystem.text_fields.Tra
 import org.example.echojournalcmp.core.presentation.designsystem.theme.EchoJournalCMPTheme
 import org.example.echojournalcmp.core.presentation.designsystem.theme.secondary70
 import org.example.echojournalcmp.core.presentation.designsystem.theme.secondary95
+import org.example.echojournalcmp.create_echo.components.EchoTopicsRow
 import org.example.echojournalcmp.create_echo.components.SelectMoodSheet
 import org.example.echojournalcmp.echos.presentation.components.EchoMoodPlayer
 import org.example.echojournalcmp.echos.presentation.model.MoodUi
@@ -185,7 +186,24 @@ fun CreateEchoScreen(
                     }
                 )
 
-                // TODO insert topicsFlowRow
+                EchoTopicsRow(
+                    topics = state.topics,
+                    addTopicText = state.addTopicText,
+                    showCreateTopicOption = state.showCreateTopicOption,
+                    showTopicSuggestions = state.showTopicSuggestions,
+                    searchResults = state.searchResults,
+                    onTopicClick = { item ->
+                        onAction(CreateEchoAction.OnTopicClick(item)) },
+                    onDismissTopicSuggestions = {
+                        onAction(CreateEchoAction.OnDismissTopicSuggestions)
+                    },
+                    onRemoveTopicClick = {
+                        onAction(CreateEchoAction.OnRemoveTopicClick(it))
+                    },
+                    onAddTopicTextChange = {
+                        onAction(CreateEchoAction.OnAddTopicTextChange(it))
+                    }
+                )
 
                 Row(
                     modifier = Modifier
