@@ -27,7 +27,9 @@ fun NavigationHost(
         }
 
         composable<NavigationRoute.CreateEchos> {
-            CreateEchoScene()
+            CreateEchoScene {
+                navigationController.navigateUp()
+            }
         }
     }
 }

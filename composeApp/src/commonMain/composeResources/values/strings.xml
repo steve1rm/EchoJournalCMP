@@ -34,7 +34,9 @@
     <string name="cancel">Cancel</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="your_data_won_t_be_saved">Your data won\'t be saved.</string>
+    <string name="discard_recording">Discard recording?</string>
     <string name="discard">Discard</string>
+    <string name="cannot_be_undone">This cannot be undone</string>
     <string name="how_are_you_doing">How are you doing?</string>
     <string name="confirm">Confirm</string>
     <string name="selected_mood">Selected Mood</string>

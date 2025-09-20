@@ -26,3 +26,5 @@ expect class VoiceRecorderImp : VoiceRecorder {
 expect fun isAppInForeground() : State<Boolean>
 
 expect val screenHeight: Int
+@Composable
+expect fun PlatformBackHandler(enabled: Boolean = true, onBack: () -> Unit)

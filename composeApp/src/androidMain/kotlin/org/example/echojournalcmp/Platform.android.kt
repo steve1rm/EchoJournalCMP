@@ -1,6 +1,7 @@
 package org.example.echojournalcmp
 
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
@@ -18,3 +19,11 @@ actual val screenHeight: Int
     get() {
         return LocalConfiguration.current.screenHeightDp
     }
+
+@Composable
+actual fun PlatformBackHandler(enabled: Boolean, onBack: () -> Unit) {
+    BackHandler(
+        enabled = enabled,
+        onBack = onBack
+    )
+}

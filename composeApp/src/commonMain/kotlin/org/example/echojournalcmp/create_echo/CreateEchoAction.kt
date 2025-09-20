@@ -1,5 +1,6 @@
 package org.example.echojournalcmp.create_echo
 
+import org.example.echojournalcmp.echos.presentation.echos.EchosAction
 import org.example.echojournalcmp.echos.presentation.echos.model.TrackSizeInfo
 import org.example.echojournalcmp.echos.presentation.model.MoodUi
 
@@ -20,4 +21,6 @@ sealed interface CreateEchoAction {
     data object OnPauseAudioClick: CreateEchoAction
     data class OnTrackSizeAvailable(val trackSizeInfo: TrackSizeInfo): CreateEchoAction
     data class OnRemoveTopicClick(val topic: String): CreateEchoAction
+    data object OnGoBack : CreateEchoAction
+    data object OnDismissConfirmLeaveDialog : CreateEchoAction
 }

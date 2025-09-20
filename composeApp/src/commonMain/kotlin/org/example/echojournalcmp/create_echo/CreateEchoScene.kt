@@ -8,13 +8,16 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun CreateEchoScene() {
+fun CreateEchoScene(
+    onConfirmLeave: () -> Unit
+) {
     val createEchoViewModel = koinViewModel<CreateEchoViewModel>()
     val createEchoState by createEchoViewModel.state.collectAsStateWithLifecycle()
 
     CreateEchoScreen(
         state = createEchoState,
-        onAction = createEchoViewModel::onAction
+        onAction = createEchoViewModel::onAction,
+        onConfirmLeave = onConfirmLeave
     )
 }
 
@@ -22,6 +25,8 @@ fun CreateEchoScene() {
 @Composable
 private fun CreateEchoScenePreview() {
     EchoJournalCMPTheme {
-        CreateEchoScene()
+        CreateEchoScene {
+
+        }
     }
 }

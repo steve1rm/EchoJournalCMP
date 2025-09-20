@@ -27,3 +27,7 @@ actual val screenHeight: Int
 
         return (heightPx / density).toInt()
     }
+
+@Composable
+actual fun PlatformBackHandler(enabled: Boolean, onBack: () -> Unit) {
+}

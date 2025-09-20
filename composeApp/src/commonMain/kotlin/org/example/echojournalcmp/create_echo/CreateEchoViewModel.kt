@@ -39,12 +39,10 @@ class CreateEchoViewModel : ViewModel() {
     fun onAction(action: CreateEchoAction) {
         when (action) {
             is CreateEchoAction.OnAddTopicTextChange -> onAddTopicTextChange(action.text)
-            CreateEchoAction.OnCancelClick -> TODO()
             CreateEchoAction.OnConfirmMood -> onConfirmMood()
             CreateEchoAction.OnDismissMoodSelector -> onDismissMoodSelector()
             CreateEchoAction.OnDismissTopicSuggestions -> onDismissTopicSuggestion()
             is CreateEchoAction.OnMoodClick -> onMoodClick(action.moodUi)
-            CreateEchoAction.OnNavigateBackClick -> TODO()
             is CreateEchoAction.OnNoteTextChange -> TODO()
             CreateEchoAction.OnPauseAudioClick -> TODO()
             CreateEchoAction.OnPlayAudioClick -> TODO()
@@ -54,7 +52,23 @@ class CreateEchoViewModel : ViewModel() {
             is CreateEchoAction.OnTitleTextChange -> TODO()
             is CreateEchoAction.OnTopicClick -> onAddTopic(action.topic)
             is CreateEchoAction.OnTrackSizeAvailable -> TODO()
+            CreateEchoAction.OnDismissConfirmLeaveDialog -> onDismissConfirmLeaveDialog()
+            CreateEchoAction.OnCancelClick,
+            CreateEchoAction.OnNavigateBackClick,
+            CreateEchoAction.OnGoBack -> onShowLeaveDialog()
         }
+    }
+
+    private fun onShowLeaveDialog() {
+        _state.update { it.copy(
+            showConfirmLeaveDialog = true
+        ) }
+    }
+
+    private fun onDismissConfirmLeaveDialog() {
+        _state.update { it.copy(
+            showConfirmLeaveDialog = false
+        ) }
     }
 
     private fun observeAddTopicText() {

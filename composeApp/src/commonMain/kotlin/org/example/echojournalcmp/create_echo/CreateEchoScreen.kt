@@ -1,10 +1,9 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 
 package org.example.echojournalcmp.create_echo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -17,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
@@ -26,13 +26,14 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -44,13 +45,15 @@ import echojournalcmp.composeapp.generated.resources.add_mood
 import echojournalcmp.composeapp.generated.resources.add_title
 import echojournalcmp.composeapp.generated.resources.back
 import echojournalcmp.composeapp.generated.resources.cancel
+import echojournalcmp.composeapp.generated.resources.cannot_be_undone
 import echojournalcmp.composeapp.generated.resources.check
+import echojournalcmp.composeapp.generated.resources.discard
+import echojournalcmp.composeapp.generated.resources.discard_recording
 import echojournalcmp.composeapp.generated.resources.edit
 import echojournalcmp.composeapp.generated.resources.navigate_back
 import echojournalcmp.composeapp.generated.resources.new_entry
-import echojournalcmp.composeapp.generated.resources.sad
 import echojournalcmp.composeapp.generated.resources.save
-import echojournalcmp.composeapp.generated.resources.selected_mood
+import org.example.echojournalcmp.PlatformBackHandler
 import org.example.echojournalcmp.core.presentation.designsystem.buttons.PrimaryButton
 import org.example.echojournalcmp.core.presentation.designsystem.buttons.SecondaryButton
 import org.example.echojournalcmp.core.presentation.designsystem.text_fields.TransparentHintTextField
@@ -68,8 +71,15 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun CreateEchoScreen(
     state: CreateEchoState,
+    onConfirmLeave: () -> Unit,
     onAction: (CreateEchoAction) -> Unit,
 ) {
+    PlatformBackHandler(
+        enabled = !state.showConfirmLeaveDialog
+    ) {
+        onAction(CreateEchoAction.OnGoBack)
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
@@ -288,6 +298,47 @@ fun CreateEchoScreen(
                     }
                 )
             }
+
+            if(state.showConfirmLeaveDialog) {
+                AlertDialog(
+                    onDismissRequest = {
+                        onAction(CreateEchoAction.OnDismissConfirmLeaveDialog)
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = onConfirmLeave,
+                            content = {
+                                Text(
+                                    text = stringResource(Res.string.discard),
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        )
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                onAction(CreateEchoAction.OnDismissConfirmLeaveDialog)
+                            },
+                            content = {
+                                Text(
+                                    text = stringResource(Res.string.cancel),
+                                )
+                            }
+                        )
+                    },
+                    title = {
+                        Text(
+                            text = stringResource(Res.string.discard_recording)
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(Res.string.cannot_be_undone)
+                        )
+                    }
+                )
+            }
         }
     )
 }
@@ -301,7 +352,10 @@ private fun Preview() {
                 mood = MoodUi.PEACEFUL,
                 canSaveEcho = true
             ),
-            onAction = {}
+            onAction = {},
+            onConfirmLeave = {
+
+            }
         )
     }
 }
