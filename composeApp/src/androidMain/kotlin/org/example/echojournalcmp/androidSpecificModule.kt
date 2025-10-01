@@ -2,7 +2,10 @@ package org.example.echojournalcmp
 
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
+import org.example.echojournalcmp.echos.domain.recording.RecordingStorage
 import org.example.echojournalcmp.echos.domain.recording.VoiceRecorder
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val androidSpecificModule = module {
@@ -12,4 +15,6 @@ val androidSpecificModule = module {
             applicationScope = get<CoroutineScope>()
         )
     }
+
+    singleOf(::InternalRecordingStorageImp) bind RecordingStorage::class
 }

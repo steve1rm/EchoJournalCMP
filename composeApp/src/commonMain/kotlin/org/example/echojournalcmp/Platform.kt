@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.unit.Dp
 import kotlinx.coroutines.flow.StateFlow
 import org.example.echojournalcmp.echos.domain.recording.RecordingDetails
+import org.example.echojournalcmp.echos.domain.recording.RecordingStorage
 import org.example.echojournalcmp.echos.domain.recording.VoiceRecorder
 
 interface Platform {
@@ -20,6 +21,11 @@ expect class VoiceRecorderImp : VoiceRecorder {
     override fun stop()
     override fun resume()
     override fun cancel()
+}
+
+expect class InternalRecordingStorageImp : RecordingStorage {
+    override suspend fun savePersistently(tempFilePath: String): String?
+    override suspend fun cleanUpTemporaryFiles()
 }
 
 @Composable

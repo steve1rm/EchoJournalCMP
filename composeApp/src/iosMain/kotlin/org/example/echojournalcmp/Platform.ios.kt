@@ -8,6 +8,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import kotlinx.cinterop.ExperimentalForeignApi
+import org.example.echojournalcmp.echos.domain.recording.RecordingStorage
 import platform.CoreGraphics.CGRectGetHeight
 import platform.UIKit.UIDevice
 import platform.UIKit.UIScreen
@@ -30,4 +31,14 @@ actual val screenHeight: Int
 
 @Composable
 actual fun PlatformBackHandler(enabled: Boolean, onBack: () -> Unit) {
+}
+
+actual class InternalRecordingStorageImp :
+    RecordingStorage {
+    actual override suspend fun savePersistently(tempFilePath: String): String? {
+        TODO("Not yet implemented")
+    }
+
+    actual override suspend fun cleanUpTemporaryFiles() {
+    }
 }

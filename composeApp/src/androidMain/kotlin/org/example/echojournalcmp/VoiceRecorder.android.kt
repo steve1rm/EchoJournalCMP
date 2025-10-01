@@ -20,8 +20,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Contextual
-import org.example.echojournalcmp.VoiceRecorderImp.Companion.TEMP_FILE_PREFIX
 import org.example.echojournalcmp.echos.domain.recording.RecordingDetails
+import org.example.echojournalcmp.echos.domain.recording.RecordingStorage.Companion.RECORDING_FILE_EXTENSION
+import org.example.echojournalcmp.echos.domain.recording.RecordingStorage.Companion.TEMP_FILE_PREFIX
 import org.example.echojournalcmp.echos.domain.recording.VoiceRecorder
 import java.io.File
 import java.io.IOException
@@ -35,7 +36,6 @@ actual class VoiceRecorderImp(
 ) : VoiceRecorder {
 
     companion object {
-        const val TEMP_FILE_PREFIX = "temp_file_prefix"
         const val MAX_AMPLITUDE_VALUE = 20_000L
     }
 
@@ -195,7 +195,7 @@ actual class VoiceRecorderImp(
 
         return File(
             context.cacheDir,
-            "${TEMP_FILE_PREFIX}_$id.mp4"
+            "${TEMP_FILE_PREFIX}_$id.$RECORDING_FILE_EXTENSION"
         )
 
     }
