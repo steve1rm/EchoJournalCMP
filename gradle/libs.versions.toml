@@ -29,7 +29,7 @@ koin = "4.1.1"
 navigationCompose = "2.9.4"
 kotlinSerialization = "1.9.0"
 kermit = "2.0.8"
-kotlinx-datetime = "0.7.1"
+kotlinx-datetime = "0.7.1-0.6.x-compat"
 moko = "0.20.1"
 
 navigation3 = "1.0.0-alpha09"
