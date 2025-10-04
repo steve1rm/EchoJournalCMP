@@ -16,6 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key.Companion.D
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.example.echojournalcmp.core.presentation.designsystem.theme.MoodPrimary25
@@ -62,6 +66,8 @@ fun EchoMoodPlayer(
         else -> moodUi.colorSet.desaturated
     }
 
+    val density = LocalDensity.current
+
     val formattedDurationText = remember(durationPlayed, totalPlaybackDuration) {
         "${durationPlayed.formatMMSS()}/${totalPlaybackDuration.formatMMSS()}"
     }
@@ -102,7 +108,20 @@ fun EchoMoodPlayer(
                     .fillMaxHeight()
                     .padding(vertical = 10.dp)
                     .padding(horizontal = 8.dp)
-                    .weight(1f),
+                    .weight(1f)
+                    .onSizeChanged {
+                        if(it.width > 0) {
+                            onTrackSizeAvailable(TrackSizeInfo(
+                                trackWidth = it.width.toFloat(),
+                                barWidth = with(density) {
+                                    amplitudeBarWidth.toPx()
+                                },
+                                spacing = with(density) {
+                                    amplitudeBarSpacing.toPx()
+                                }
+                            ))
+                        }
+                    },
             )
 
             Text(

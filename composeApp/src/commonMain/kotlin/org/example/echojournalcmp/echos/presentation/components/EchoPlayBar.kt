@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.example.echojournalcmp.core.presentation.designsystem.theme.EchoJournalCMPTheme
+import org.example.echojournalcmp.create_echo.CreateEchoAction
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.random.Random
 
@@ -38,14 +39,14 @@ fun EchoPlayBar(
 
         val clipPath = Path()
 
-        powerRatios.forEachIndexed { index, ratio ->
+        powerRatios.forEachIndexed { i, ratio ->
             val height = ratio * size.height
 
-            val xOffSet = index * (amplitudeBarSpacingPx + amplitudeBarWidthPx)
-            val yTopStart = this.center.y - height / 2f
+            val xOffset = i * (amplitudeBarSpacingPx + amplitudeBarWidthPx)
+            val yTopStart = center.y - height / 2f
 
             val topLeft = Offset(
-                x = xOffSet,
+                x = xOffset,
                 y = yTopStart
             )
             val rectSize = Size(
@@ -55,34 +56,27 @@ fun EchoPlayBar(
             val roundRect = RoundRect(
                 rect = Rect(
                     offset = topLeft,
-                    size = rectSize,
+                    size = rectSize
                 ),
-                cornerRadius = CornerRadius(100f))
-
+                cornerRadius = CornerRadius(100f)
+            )
             clipPath.addRoundRect(roundRect)
 
-            this.drawRoundRect(
+            drawRoundRect(
                 color = trackColor,
                 topLeft = topLeft,
                 size = rectSize,
                 cornerRadius = CornerRadius(100f)
             )
+        }
 
-            clipPath(clipPath) {
-                this.drawRect(
-                    color = trackFillColor,
-                    size = Size(
-                        width = this.size.width * playerProgress(),
-                        height = this.size.height
-                    )
+        clipPath(clipPath) {
+            drawRect(
+                color = trackFillColor,
+                size = Size(
+                    width = size.width * playerProgress(),
+                    height = size.height
                 )
-            }
-
-            this.drawRoundRect(
-                color = trackColor,
-                topLeft = topLeft,
-                size = rectSize,
-                cornerRadius = CornerRadius(100f)
             )
         }
     }
