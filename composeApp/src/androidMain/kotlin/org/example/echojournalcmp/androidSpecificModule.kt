@@ -2,6 +2,7 @@ package org.example.echojournalcmp
 
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
+import org.example.echojournalcmp.echos.domain.audio.AudioPlayer
 import org.example.echojournalcmp.echos.domain.recording.RecordingStorage
 import org.example.echojournalcmp.echos.domain.recording.VoiceRecorder
 import org.koin.core.module.dsl.singleOf
@@ -17,4 +18,5 @@ val androidSpecificModule = module {
     }
 
     singleOf(::InternalRecordingStorageImp) bind RecordingStorage::class
+    singleOf(::AudioPlayerImp) bind AudioPlayer::class
 }

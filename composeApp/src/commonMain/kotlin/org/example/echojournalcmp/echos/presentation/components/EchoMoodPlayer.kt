@@ -127,6 +127,9 @@ fun EchoMoodPlayer(
             Text(
                 text = formattedDurationText,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontFeatureSettings = "tnum"
+                ),
                 modifier = Modifier
                     .padding(end = 8.dp)
             )

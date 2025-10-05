@@ -8,6 +8,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.flow.StateFlow
+import org.example.echojournalcmp.echos.domain.audio.AudioPlayer
+import org.example.echojournalcmp.echos.domain.audio.AudioTrack
 import org.example.echojournalcmp.echos.domain.recording.RecordingStorage
 import platform.CoreGraphics.CGRectGetHeight
 import platform.UIKit.UIDevice
@@ -40,5 +43,23 @@ actual class InternalRecordingStorageImp :
     }
 
     actual override suspend fun cleanUpTemporaryFiles() {
+    }
+}
+
+actual class AudioPlayerImp :
+    AudioPlayer {
+    actual override val activeTrack: StateFlow<AudioTrack>
+        get() = TODO("Not yet implemented")
+
+    actual override fun play(filePath: String, onComplete: () -> Unit) {
+    }
+
+    actual override fun pause() {
+    }
+
+    actual override fun resume() {
+    }
+
+    actual override fun stop() {
     }
 }
