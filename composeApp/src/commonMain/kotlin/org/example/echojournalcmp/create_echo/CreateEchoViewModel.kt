@@ -50,7 +50,13 @@ class CreateEchoViewModel(
     private val _echoChannel = Channel<CreateEchoEvent>()
     val echoChannel = _echoChannel.receiveAsFlow()
     private val _state = MutableStateFlow(CreateEchoState(
-        playbackTotalDuration = recordingDetails.duration
+        playbackTotalDuration = recordingDetails.duration,
+        titleText = savedStateHandle["title"] ?: "",
+        noteText = savedStateHandle["note"] ?: "",
+        topics = savedStateHandle.get<String>("topics")?.split(",") ?: emptyList(),
+        mood = savedStateHandle.get<String>("mood")?.let { mood -> MoodUi.valueOf(mood) },
+        showMoodSelector = savedStateHandle.get<String>("mood") == null,
+        canSaveEcho = savedStateHandle["canSaveEcho"] ?: false,
     ))
     val state = _state
         .onStart {
@@ -58,6 +64,13 @@ class CreateEchoViewModel(
                 observeAddTopicText()
                 hasLoadedInitialData = true
             }
+        }
+        .onEach { state ->
+            savedStateHandle["title"] = state.titleText
+            savedStateHandle["note"] = state.noteText
+            savedStateHandle["topics"] = state.topics.joinToString(",")
+            savedStateHandle["mood"] = state.mood?.name
+            savedStateHandle["canSaveEcho"] = state.canSaveEcho
         }
         .stateIn(
             scope = viewModelScope,
@@ -72,7 +85,7 @@ class CreateEchoViewModel(
             CreateEchoAction.OnDismissMoodSelector -> onDismissMoodSelector()
             CreateEchoAction.OnDismissTopicSuggestions -> onDismissTopicSuggestion()
             is CreateEchoAction.OnMoodClick -> onMoodClick(action.moodUi)
-            is CreateEchoAction.OnNoteTextChange -> onNoteTextChange(action.text)
+            is CreateEchoAction.OnNoteTextChange -> onNoteTextChange(action.note)
             CreateEchoAction.OnPauseAudioClick -> onPauseAudio()
             CreateEchoAction.OnPlayAudioClick -> onPlayAudio()
             is CreateEchoAction.OnRemoveTopicClick -> onRemoveTopicClick(action.topic)
@@ -91,7 +104,7 @@ class CreateEchoViewModel(
     private fun onNoteTextChange(text: String) {
         _state.update {
             it.copy(
-                titleText = text
+                noteText = text
             )
         }
     }
@@ -151,7 +164,8 @@ class CreateEchoViewModel(
     private fun onTitleTextChange(text: String) {
         _state.update {
             it.copy(
-                titleText = text
+                titleText = text,
+                canSaveEcho = text.isNotBlank() && it.mood != null
             )
         }
     }
