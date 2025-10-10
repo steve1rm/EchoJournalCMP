@@ -43,9 +43,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.process)
             // Widgets
             implementation(libs.bundles.widget.glance)
-            // Database - Room
             implementation(libs.room.ktx)
-            implementation(libs.room.runtime)
+
             // Koin for Android
             implementation(libs.bundles.koin)
             implementation(libs.androidx.material.icons.core)
@@ -59,6 +58,10 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.ui)
+
+            // Database - Room
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
 
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.lifecycle.viewmodelCompose)

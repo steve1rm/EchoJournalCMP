@@ -24,6 +24,7 @@ materialIconsCore = "1.7.8"
 materialIconsExtended = "1.7.8"
 splashscreen = "1.0.1"
 room = "2.8.0"
+sqlite = "2.5.2"
 ksp = "2.2.20-2.0.2"
 koin = "4.1.1"
 navigationCompose = "2.9.4"
@@ -70,6 +71,7 @@ androidx-glance-material3 = { module = "androidx.glance:glance-material3", versi
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
