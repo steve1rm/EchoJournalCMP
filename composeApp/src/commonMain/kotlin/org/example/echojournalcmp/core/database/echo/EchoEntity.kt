@@ -11,7 +11,7 @@ data class EchoEntity(
     val title: String,
     val mood: Mood,
     val recordedAt: Long,
-    val note: String,
+    val note: String?,
     val audioFilePath: String,
     val audioPlaybackLength: Long,
     val audioAmplitudes: List<Float>

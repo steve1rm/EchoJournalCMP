@@ -22,6 +22,11 @@ fun CreateEchoScene(
                 Logger.e {
                     "Failed to save file"
                 }
+                // TODO show a toast here
+                onConfirmLeave()
+            }
+
+            CreateEchoEvent.SuccessToSaveEcho -> {
                 onConfirmLeave()
             }
         }

@@ -1,4 +1,4 @@
-@file:OptIn(FlowPreview::class)
+@file:OptIn(FlowPreview::class, ExperimentalTime::class)
 
 package org.example.echojournalcmp.create_echo
 
@@ -25,6 +25,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable.Companion.asUnselectedItems
 import org.example.echojournalcmp.echos.domain.audio.AudioPlayer
+import org.example.echojournalcmp.echos.domain.echos.Echo
+import org.example.echojournalcmp.echos.domain.echos.EchoDataSource
+import org.example.echojournalcmp.echos.domain.echos.Mood
 import org.example.echojournalcmp.echos.domain.recording.RecordingStorage
 import org.example.echojournalcmp.echos.presentation.echos.model.PlaybackState
 import org.example.echojournalcmp.echos.presentation.echos.model.TrackSizeInfo
@@ -32,12 +35,15 @@ import org.example.echojournalcmp.echos.presentation.model.MoodUi
 import org.example.echojournalcmp.echos.presentation.utils.AmplitudeNormalizer
 import org.example.echojournalcmp.navigation.NavigationRoute
 import org.example.echojournalcmp.toRecordingDetails
+import kotlin.time.Clock
 import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 class CreateEchoViewModel(
     savedStateHandle: SavedStateHandle,
     private val recordingStorage: RecordingStorage,
-    private val audioPlayer: AudioPlayer
+    private val audioPlayer: AudioPlayer,
+    private val echoDataSource: EchoDataSource
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -171,7 +177,7 @@ class CreateEchoViewModel(
     }
 
     private fun onSaveClick() {
-        if(recordingDetails.filePath != null) {
+        if(recordingDetails.filePath != null && state.value.canSaveEcho) {
             viewModelScope.launch {
                 val savedFilePath = recordingStorage.savePersistently(
                     tempFilePath = recordingDetails.filePath
@@ -179,9 +185,26 @@ class CreateEchoViewModel(
 
                 if(savedFilePath == null) {
                     _echoChannel.send(CreateEchoEvent.FailedToSaveFile)
+                    return@launch
                 }
 
-                // TODO: Echo
+                val currentState = state.value
+
+                val echo = Echo(
+                    mood = currentState.mood?.let {
+                        Mood.valueOf(it.name)
+                    } ?: throw IllegalStateException("Mood must be set before saving"),
+                    title = currentState.titleText.trim(),
+                    note = currentState.noteText.ifBlank { null },
+                    topics = currentState.topics,
+                    audioFilePath = savedFilePath,
+                    audioPlaybackLength = currentState.playbackTotalDuration,
+                    audioAmplitudes = recordingDetails.amplitudes,
+                    recordedAt = Clock.System.now()
+                )
+
+                echoDataSource.insertEcho(echo)
+                _echoChannel.send(CreateEchoEvent.SuccessToSaveEcho)
             }
         }
     }

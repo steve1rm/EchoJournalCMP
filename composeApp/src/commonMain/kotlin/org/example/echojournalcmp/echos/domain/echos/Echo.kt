@@ -10,7 +10,7 @@ data class Echo(
     val id: Int? = null,
     val mood: Mood,
     val title: String,
-    val note: String,
+    val note: String?,
     val topics: List<String>,
     val recordedAt: Instant,
     val audioFilePath: String,

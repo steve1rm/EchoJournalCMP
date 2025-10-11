@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3e8a6b3c4ca9366069ebe2c9b3cfbe83",
+    "identityHash": "c11c9a3da1239e8d1e52a712acb22b3c",
     "entities": [
       {
         "tableName": "EchoEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`echoId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `mood` TEXT NOT NULL, `recordedAt` INTEGER NOT NULL, `note` TEXT NOT NULL, `audioFilePath` TEXT NOT NULL, `audioPlaybackLength` INTEGER NOT NULL, `audioAmplitudes` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`echoId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `mood` TEXT NOT NULL, `recordedAt` INTEGER NOT NULL, `note` TEXT, `audioFilePath` TEXT NOT NULL, `audioPlaybackLength` INTEGER NOT NULL, `audioAmplitudes` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "echoId",
@@ -35,8 +35,7 @@
           {
             "fieldPath": "note",
             "columnName": "note",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "audioFilePath",
@@ -110,7 +109,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3e8a6b3c4ca9366069ebe2c9b3cfbe83')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c11c9a3da1239e8d1e52a712acb22b3c')"
     ]
   }
 }
