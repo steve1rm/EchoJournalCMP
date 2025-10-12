@@ -1,14 +1,21 @@
+@file:OptIn(ExperimentalTime::class)
+
 package org.example.echojournalcmp.echos.presentation.echos
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import echojournalcmp.composeapp.generated.resources.Res
 import echojournalcmp.composeapp.generated.resources.all_topics
+import echojournalcmp.composeapp.generated.resources.today
+import echojournalcmp.composeapp.generated.resources.yesterday
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -17,22 +24,34 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable
 import org.example.echojournalcmp.core.presentation.util.UiText
 import org.example.echojournalcmp.echos.domain.audio.AudioPlayer
+import org.example.echojournalcmp.echos.domain.echos.EchoDataSource
 import org.example.echojournalcmp.echos.domain.recording.VoiceRecorder
 import org.example.echojournalcmp.echos.presentation.echos.model.AudioCaptureMethod
-import org.example.echojournalcmp.echos.presentation.model.MoodUi
 import org.example.echojournalcmp.echos.presentation.echos.model.EchoFilterChip
 import org.example.echojournalcmp.echos.presentation.echos.model.MoodChipContent
+import org.example.echojournalcmp.echos.presentation.echos.model.PlaybackState
 import org.example.echojournalcmp.echos.presentation.echos.model.RecordingState
-import kotlin.collections.mapValues
+import org.example.echojournalcmp.echos.presentation.echos.model.TrackSizeInfo
+import org.example.echojournalcmp.echos.presentation.model.EchoUi
+import org.example.echojournalcmp.echos.presentation.model.MoodUi
+import org.example.echojournalcmp.echos.presentation.utils.AmplitudeNormalizer
+import org.example.echojournalcmp.echos.presentation.utils.toEchoUI
+import kotlin.time.Clock
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class EchosViewModel(
     private val voiceRecorder: VoiceRecorder,
-    private val audioPlayer: AudioPlayer
+    private val audioPlayer: AudioPlayer,
+    private val echoDataSource: EchoDataSource
 ) : ViewModel() {
 
     companion object {
@@ -46,6 +65,7 @@ class EchosViewModel(
     private val selectedTopicFilters = MutableStateFlow<List<String>>(emptyList())
     private val echoChannel = Channel<EchoEvents>()
     val echoEvents = echoChannel.receiveAsFlow()
+    private val audioTrackSizeInfo = MutableStateFlow<TrackSizeInfo?>(null)
 
     private val _state = MutableStateFlow(EchosState())
     val state = _state
@@ -53,6 +73,7 @@ class EchosViewModel(
             if(!hasLoadedInitialData) {
                 /** Load initial data here **/
                 observeFilters()
+                observeEchos()
                 hasLoadedInitialData = true
             }
         }
@@ -61,95 +82,187 @@ class EchosViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = EchosState()
         )
-        
-        fun onAction(action: EchosAction) {
-            when(action) {
-                is EchosAction.OnRemoveFilters -> {
-                    when(action.filterType) {
-                        EchoFilterChip.MOODS -> {
-                            selectedMoodFilters.update { emptyList() }
-                        }
-                        EchoFilterChip.TOPICS -> {
-                            selectedTopicFilters.update { emptyList() }
-                        }
-                    }
-                }
-                EchosAction.OnTopicChipClick -> {
-                    _state.update {
-                        it.copy(
-                            selectedEchoFilterChip = EchoFilterChip.TOPICS
-                        )
-                    }
-                }
 
-                EchosAction.OnMoodChipClick -> {
-                    _state.update {
-                        it.copy(
-                            selectedEchoFilterChip = EchoFilterChip.MOODS
-                        )
-                    }
-                }
-
-                EchosAction.OnSettingsClick -> {
-
-                }
-
-                EchosAction.OnDismissMoodDropDown,
-                EchosAction.OnDismissTopicDropDown -> {
-                    _state.update {
-                        it.copy(
-                            selectedEchoFilterChip = null
-                        )
-                    }
-                }
-                is EchosAction.OnFilterByMoodClick -> {
-                    toggleMoodFilter(action.moodUi)
-                }
-                is EchosAction.OnFilterByTopicClick -> {
-                    toggleTopicFilter(action.topic)
-                }
-
-                EchosAction.OnPausedRecordingClick -> {
-                    pauseRecording()
-                }
-                is EchosAction.OnRecordFabClick -> {
-                    viewModelScope.launch {
-                        echoChannel.send(EchoEvents.RequestAudioPermission)
-                    }
-                }
-                is EchosAction.OnTrackSizeAvailable -> {
-
-                }
-
-                EchosAction.OnAudioPermissionGranted -> {
-                    Logger.d(
-                        tag = EchosViewModel::class.toString(),
-                        messageString = "Recording has been started"
-                    )
-                    startRecording(captureMethod = AudioCaptureMethod.STANDARD)
-                }
-
-                EchosAction.OnCancelRecording -> {
-                    cancelRecording()
-                }
-                EchosAction.OnCompletedRecording -> {
-                    stopRecording()
-                }
-                EchosAction.OnResumedRecordingClick -> {
-                    resumeRecording()
-                }
-
-                EchosAction.OnRecordButtonLongClick -> {
-                    startRecording(captureMethod = AudioCaptureMethod.QUICK)
-                }
-                EchosAction.OnRequestPermissionQuickRecording -> {
-                    viewModelScope.launch {
-                        echoChannel.send(EchoEvents.RequestAudioPermission)
-                    }
-                }
-                is EchosAction.OnPlayEchoClick -> onPlayAudio(action.echoId)
+    private val echos = echoDataSource
+        .observeEchos()
+        .onEach { echoes ->
+            _state.update { state ->
+                state.copy(
+                    hasEchosRecorded = echoes.isNotEmpty(),
+                    isLoadingData = false)
             }
         }
+        .combine(audioTrackSizeInfo) { echos, trackSizeInfo ->
+            echos.map { echo ->
+                if(trackSizeInfo != null) {
+                    echo.copy(
+                        audioAmplitudes = AmplitudeNormalizer.normalize(
+                            sourceAmplitudes = echo.audioAmplitudes,
+                            trackWidth = trackSizeInfo.trackWidth,
+                            barWidth = trackSizeInfo.barWidth,
+                            spacing = trackSizeInfo.spacing
+                        )
+                    )
+                }
+                else {
+                    echo
+                }
+            }
+        }.flowOn(Dispatchers.Default)
+
+    private fun observeEchos() {
+        combine(
+            echos,
+            playingEchoId,
+            audioPlayer.activeTrack
+        ) { echos, echoId, activeTrack ->
+            if(playingEchoId == null || activeTrack == null) {
+                return@combine echos.map {
+                    it.toEchoUI()
+                }
+            }
+
+            echos.map { echo ->
+                if(echo.id == playingEchoId.value) {
+                    echo.toEchoUI(
+                        currentPlaybackDuration = activeTrack.durationPlayed,
+                        playbackState = if(activeTrack.isPlaying) PlaybackState.PLAYING else PlaybackState.PAUSED
+                    )
+                }
+                else {
+                    echo.toEchoUI()
+                }
+            }
+        }
+            .groupByRelativeDate()
+            .onEach { groupedEchos ->
+                _state.update { state ->
+                    state.copy(
+                        echos = groupedEchos
+                    )
+                }
+            }
+            .flowOn(Dispatchers.Default)
+            .launchIn(viewModelScope)
+    }
+    private fun Flow<List<EchoUi>>.groupByRelativeDate(): Flow<Map<UiText, List<EchoUi>>> {
+        val now = Clock.System.now()
+        val todayDate = now.toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val yesterdayDate = now.minus(1.days).toLocalDateTime(TimeZone.currentSystemDefault()).date
+
+        return this.map { echoes ->
+            echoes
+                .groupBy { echoUi ->
+                    Instant.fromEpochMilliseconds(
+                        echoUi.recordedAt
+                    ).toLocalDateTime(TimeZone.currentSystemDefault()).date
+                }
+                .mapValues { (_, echoList) ->
+                    echoList.sortedByDescending { echoUi -> echoUi.recordedAt }
+                }
+                .toList()
+                .sortedByDescending { (date, _) -> date }
+                .associate { (date, echoList) ->
+                    val dateText = when (date) {
+                        todayDate -> UiText.LocalizedString(Res.string.today)
+                        yesterdayDate -> UiText.LocalizedString(Res.string.yesterday)
+                        else -> UiText.Dynamic(date.toString())
+                    }
+                    dateText to echoList
+                }
+        }
+    }
+
+    fun onAction(action: EchosAction) {
+        when(action) {
+            is EchosAction.OnRemoveFilters -> {
+                when(action.filterType) {
+                    EchoFilterChip.MOODS -> {
+                        selectedMoodFilters.update { emptyList() }
+                    }
+                    EchoFilterChip.TOPICS -> {
+                        selectedTopicFilters.update { emptyList() }
+                    }
+                }
+            }
+            EchosAction.OnTopicChipClick -> {
+                _state.update {
+                    it.copy(
+                        selectedEchoFilterChip = EchoFilterChip.TOPICS
+                    )
+                }
+            }
+
+            EchosAction.OnMoodChipClick -> {
+                _state.update {
+                    it.copy(
+                        selectedEchoFilterChip = EchoFilterChip.MOODS
+                    )
+                }
+            }
+
+            EchosAction.OnSettingsClick -> {
+
+            }
+
+            EchosAction.OnDismissMoodDropDown,
+            EchosAction.OnDismissTopicDropDown -> {
+                _state.update {
+                    it.copy(
+                        selectedEchoFilterChip = null
+                    )
+                }
+            }
+            is EchosAction.OnFilterByMoodClick -> {
+                toggleMoodFilter(action.moodUi)
+            }
+            is EchosAction.OnFilterByTopicClick -> {
+                toggleTopicFilter(action.topic)
+            }
+
+            EchosAction.OnPausedRecordingClick -> {
+                pauseRecording()
+            }
+            is EchosAction.OnRecordFabClick -> {
+                viewModelScope.launch {
+                    echoChannel.send(EchoEvents.RequestAudioPermission)
+                }
+            }
+            is EchosAction.OnTrackSizeAvailable -> {
+                audioTrackSizeInfo.update {
+                    action.trackSize
+                }
+            }
+
+            EchosAction.OnAudioPermissionGranted -> {
+                Logger.d(
+                    tag = EchosViewModel::class.toString(),
+                    messageString = "Recording has been started"
+                )
+                startRecording(captureMethod = AudioCaptureMethod.STANDARD)
+            }
+
+            EchosAction.OnCancelRecording -> {
+                cancelRecording()
+            }
+            EchosAction.OnCompletedRecording -> {
+                stopRecording()
+            }
+            EchosAction.OnResumedRecordingClick -> {
+                resumeRecording()
+            }
+
+            EchosAction.OnRecordButtonLongClick -> {
+                startRecording(captureMethod = AudioCaptureMethod.QUICK)
+            }
+            EchosAction.OnRequestPermissionQuickRecording -> {
+                viewModelScope.launch {
+                    echoChannel.send(EchoEvents.RequestAudioPermission)
+                }
+            }
+            is EchosAction.OnPlayEchoClick -> onPlayAudio(action.echoId)
+        }
+    }
 
     private fun onPlayAudio(echoId: Int) {
         val selectedEcho = state.value.echos.values
