@@ -90,21 +90,22 @@ class CreateEchoViewModel(
         )
 
     private fun fetchDefaultSettings() {
-     //   viewModelScope.launch {
-            combine(
-                settingsPreference.observeDefaultTopics()
-                    .take(1),
-                settingsPreference.observeDefaultMood()
-                    .take(1)) { topics, mood ->
-                _state.update { state ->
-                    state.copy(
-                        selectedMood = MoodUi.valueOf(mood.name),
-                        topics = topics
-                    )
-                }
-            }.launchIn(viewModelScope)
-        }
-   // }
+        combine(
+            settingsPreference.observeDefaultTopics()
+                .take(1),
+            settingsPreference.observeDefaultMood()
+                .take(1)) { topics, mood ->
+            _state.update { state ->
+                val mood = MoodUi.valueOf(mood.name)
+
+                state.copy(
+                    mood = mood,
+                    selectedMood = mood,
+                    topics = topics
+                )
+            }
+        }.launchIn(viewModelScope)
+    }
 
     fun onAction(action: CreateEchoAction) {
         when (action) {

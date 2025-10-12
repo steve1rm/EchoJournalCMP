@@ -26,6 +26,7 @@ import echojournalcmp.composeapp.generated.resources.back
 import echojournalcmp.composeapp.generated.resources.settings
 import org.example.echojournalcmp.core.presentation.designsystem.theme.EchoJournalCMPTheme
 import org.example.echojournalcmp.core.presentation.designsystem.theme.bgGradient
+import org.example.echojournalcmp.echos.presentation.settings.components.MoodCard
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -75,7 +76,12 @@ fun SettingsScreen(
                 horizontalAlignment = CenterHorizontally,
                 verticalArrangement = spacedBy(16.dp)
             ) {
-
+                MoodCard(
+                    selectedMood = state.selectedMood,
+                    onMoodClick = {
+                        onAction(SettingsAction.OnMoodClick(it))
+                    }
+                )
             }
         }
     )
