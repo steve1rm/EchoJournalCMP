@@ -3,15 +3,14 @@
 package org.example.echojournalcmp
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.unit.Dp
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import org.example.echojournalcmp.echos.domain.audio.AudioPlayer
 import org.example.echojournalcmp.echos.domain.audio.AudioTrack
+import org.example.echojournalcmp.echos.domain.echos.Mood
 import org.example.echojournalcmp.echos.domain.recording.RecordingStorage
+import org.example.echojournalcmp.echos.domain.settings.SettingsPreference
 import platform.CoreGraphics.CGRectGetHeight
 import platform.UIKit.UIDevice
 import platform.UIKit.UIScreen
@@ -61,5 +60,22 @@ actual class AudioPlayerImp :
     }
 
     actual override fun stop() {
+    }
+}
+
+actual class SettingsPreferenceImp :
+    SettingsPreference {
+    actual override suspend fun saveDefaultTopics(topics: List<String>) {
+    }
+
+    actual override fun observeDefaultTopics(): Flow<List<String>> {
+        TODO("Not yet implemented")
+    }
+
+    actual override suspend fun saveDefaultMood(mood: Mood) {
+    }
+
+    actual override fun observeDefaultMood(): Flow<Mood> {
+        TODO("Not yet implemented")
     }
 }

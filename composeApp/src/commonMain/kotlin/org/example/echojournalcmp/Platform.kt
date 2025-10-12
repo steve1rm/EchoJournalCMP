@@ -2,14 +2,15 @@ package org.example.echojournalcmp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.ui.unit.Dp
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import org.example.echojournalcmp.echos.domain.audio.AudioPlayer
 import org.example.echojournalcmp.echos.domain.audio.AudioTrack
+import org.example.echojournalcmp.echos.domain.echos.Mood
 import org.example.echojournalcmp.echos.domain.recording.RecordingDetails
 import org.example.echojournalcmp.echos.domain.recording.RecordingStorage
 import org.example.echojournalcmp.echos.domain.recording.VoiceRecorder
+import org.example.echojournalcmp.echos.domain.settings.SettingsPreference
 
 interface Platform {
     val name: String
@@ -37,6 +38,14 @@ expect class AudioPlayerImp : AudioPlayer {
     override fun pause()
     override fun resume()
     override fun stop()
+}
+
+expect class SettingsPreferenceImp : SettingsPreference {
+    override suspend fun saveDefaultTopics(topics: List<String>)
+    override fun observeDefaultTopics(): Flow<List<String>>
+    override suspend fun saveDefaultMood(mood: Mood)
+    override fun observeDefaultMood(): Flow<Mood>
+
 }
 
 @Composable

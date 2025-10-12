@@ -12,6 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable.Companion.asUnselectedItems
@@ -29,6 +31,7 @@ import org.example.echojournalcmp.echos.domain.echos.Echo
 import org.example.echojournalcmp.echos.domain.echos.EchoDataSource
 import org.example.echojournalcmp.echos.domain.echos.Mood
 import org.example.echojournalcmp.echos.domain.recording.RecordingStorage
+import org.example.echojournalcmp.echos.domain.settings.SettingsPreference
 import org.example.echojournalcmp.echos.presentation.echos.model.PlaybackState
 import org.example.echojournalcmp.echos.presentation.echos.model.TrackSizeInfo
 import org.example.echojournalcmp.echos.presentation.model.MoodUi
@@ -43,7 +46,8 @@ class CreateEchoViewModel(
     savedStateHandle: SavedStateHandle,
     private val recordingStorage: RecordingStorage,
     private val audioPlayer: AudioPlayer,
-    private val echoDataSource: EchoDataSource
+    private val echoDataSource: EchoDataSource,
+    private val settingsPreference: SettingsPreference
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -68,6 +72,7 @@ class CreateEchoViewModel(
         .onStart {
             if (!hasLoadedInitialData) {
                 observeAddTopicText()
+                fetchDefaultSettings()
                 hasLoadedInitialData = true
             }
         }
@@ -83,6 +88,23 @@ class CreateEchoViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = CreateEchoState()
         )
+
+    private fun fetchDefaultSettings() {
+     //   viewModelScope.launch {
+            combine(
+                settingsPreference.observeDefaultTopics()
+                    .take(1),
+                settingsPreference.observeDefaultMood()
+                    .take(1)) { topics, mood ->
+                _state.update { state ->
+                    state.copy(
+                        selectedMood = MoodUi.valueOf(mood.name),
+                        topics = topics
+                    )
+                }
+            }.launchIn(viewModelScope)
+        }
+   // }
 
     fun onAction(action: CreateEchoAction) {
         when (action) {

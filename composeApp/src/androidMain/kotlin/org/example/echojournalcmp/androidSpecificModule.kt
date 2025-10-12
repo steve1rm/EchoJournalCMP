@@ -7,6 +7,7 @@ import org.example.echojournalcmp.core.database.EchoDatabase
 import org.example.echojournalcmp.echos.domain.audio.AudioPlayer
 import org.example.echojournalcmp.echos.domain.recording.RecordingStorage
 import org.example.echojournalcmp.echos.domain.recording.VoiceRecorder
+import org.example.echojournalcmp.echos.domain.settings.SettingsPreference
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -22,6 +23,7 @@ val androidSpecificModule = module {
 
     singleOf(::InternalRecordingStorageImp) bind RecordingStorage::class
     singleOf(::AudioPlayerImp) bind AudioPlayer::class
+    singleOf(::SettingsPreferenceImp) bind SettingsPreference::class
 
     single<EchoDatabase> {
         Room.databaseBuilder(

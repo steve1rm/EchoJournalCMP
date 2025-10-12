@@ -4,10 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import org.example.echojournalcmp.echos.domain.echos.Mood
+import org.example.echojournalcmp.echos.domain.settings.SettingsPreference
+import org.example.echojournalcmp.echos.presentation.model.MoodUi
 
-class SettingsViewModel : ViewModel() {
+class SettingsViewModel(
+    private val settingsPreference: SettingsPreference
+) : ViewModel() {
 
     private var hasLoadedInitialData = false
 
@@ -15,7 +24,7 @@ class SettingsViewModel : ViewModel() {
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
-                /** Load initial data here **/
+                observeSettings()
                 hasLoadedInitialData = true
             }
         }
@@ -25,16 +34,49 @@ class SettingsViewModel : ViewModel() {
             initialValue = SettingsState()
         )
 
+    private fun observeSettings() {
+        combine(
+            settingsPreference.observeDefaultTopics(),
+            settingsPreference.observeDefaultMood()
+        ) { topics, mood ->
+            _state.update { state ->
+                state.copy(
+                    topics = topics,
+                    selectedMood = MoodUi.valueOf(mood.name)
+                )
+            }
+        }.launchIn(viewModelScope)
+    }
+
     fun onAction(action: SettingsAction) {
         when (action) {
             SettingsAction.OnAddButtonClick -> {}
-            SettingsAction.OnBackClick -> {}
-            SettingsAction.OnCreateTopicClick -> {}
+            is SettingsAction.OnSelectTopicClick -> onSelectTopicClick(action.topic)
             SettingsAction.OnDismissTopicDropDown -> {}
-            is SettingsAction.OnMoodClick -> {}
-            is SettingsAction.OnRemoveTopicClick -> {}
+            is SettingsAction.OnMoodClick -> onMoodClick(action.mood)
+            is SettingsAction.OnRemoveTopicClick -> onRemoveTopicClick(action.topic)
             is SettingsAction.OnSearchTextChange -> {}
+            else -> Unit
         }
     }
 
+    private fun onRemoveTopicClick(topic: String) {
+        viewModelScope.launch {
+            val newDefaultTopic = (state.value.topics - topic)
+            settingsPreference.saveDefaultTopics(newDefaultTopic)
+        }
+    }
+
+    private fun onSelectTopicClick(topic: String) {
+        viewModelScope.launch {
+            val newDefaultTopic = (state.value.topics + topic).distinct()
+            settingsPreference.saveDefaultTopics(newDefaultTopic)
+        }
+    }
+
+    private fun onMoodClick(mood: MoodUi) {
+        viewModelScope.launch {
+            settingsPreference.saveDefaultMood(Mood.valueOf(mood.name))
+        }
+    }
 }

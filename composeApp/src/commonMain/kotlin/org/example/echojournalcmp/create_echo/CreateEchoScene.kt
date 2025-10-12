@@ -22,7 +22,7 @@ fun CreateEchoScene(
                 Logger.e {
                     "Failed to save file"
                 }
-                // TODO show a toast here
+                // TODO show a toast here for ios and android
                 onConfirmLeave()
             }
 
