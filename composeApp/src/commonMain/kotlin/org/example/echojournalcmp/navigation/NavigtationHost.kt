@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.example.echojournalcmp.create_echo.CreateEchoScene
 import org.example.echojournalcmp.echos.presentation.echos.EchosScene
+import org.example.echojournalcmp.echos.presentation.settings.SettingsScene
 import org.example.echojournalcmp.toCreateEchoRoute
 
 
@@ -22,6 +23,11 @@ fun NavigationHost(
                 onNavigateToCreateEcho = { recordingDetails ->
                     navigationController.navigate(
                         recordingDetails.toCreateEchoRoute())
+                },
+                onNavigateToSettings = {
+                    navigationController.navigate(
+                        NavigationRoute.Settings
+                    )
                 }
             )
         }
@@ -30,6 +36,12 @@ fun NavigationHost(
             CreateEchoScene {
                 navigationController.navigateUp()
             }
+        }
+
+        composable<NavigationRoute.Settings> {
+            SettingsScene(
+                onBackClick = navigationController::navigateUp
+            )
         }
     }
 }

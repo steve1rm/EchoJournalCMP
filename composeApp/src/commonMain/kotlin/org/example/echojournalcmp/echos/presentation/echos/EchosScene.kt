@@ -1,16 +1,11 @@
 package org.example.echojournalcmp.echos.presentation.echos
 
-import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalContext
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import co.touchlab.kermit.Logger
-import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
@@ -23,7 +18,8 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EchosScene(
-    onNavigateToCreateEcho: (recordingDetails: RecordingDetails) -> Unit
+    onNavigateToCreateEcho: (recordingDetails: RecordingDetails) -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     val echosViewModel = koinViewModel<EchosViewModel>()
     val state by echosViewModel.state.collectAsStateWithLifecycle()
@@ -66,6 +62,15 @@ fun EchosScene(
 
     EchosScreen(
         state = state,
-        onAction = echosViewModel::onAction
+        onAction = { action ->
+            when(action) {
+                is EchosAction.OnSettingsClick -> {
+                    onNavigateToSettings()
+                }
+                else -> {
+                    echosViewModel.onAction(action)
+                }
+            }
+        }
     )
 }
