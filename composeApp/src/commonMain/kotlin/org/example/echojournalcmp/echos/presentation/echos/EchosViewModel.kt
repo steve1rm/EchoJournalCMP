@@ -29,6 +29,7 @@ import kotlinx.datetime.toLocalDateTime
 import org.example.echojournalcmp.core.presentation.designsystem.dropdowns.Selectable
 import org.example.echojournalcmp.core.presentation.util.UiText
 import org.example.echojournalcmp.echos.domain.audio.AudioPlayer
+import org.example.echojournalcmp.echos.domain.echos.Echo
 import org.example.echojournalcmp.echos.domain.echos.EchoDataSource
 import org.example.echojournalcmp.echos.domain.recording.VoiceRecorder
 import org.example.echojournalcmp.echos.presentation.echos.model.AudioCaptureMethod
@@ -85,6 +86,7 @@ class EchosViewModel(
 
     private val echos = echoDataSource
         .observeEchos()
+        .filterByMoodAndTopics()
         .onEach { echoes ->
             _state.update { state ->
                 state.copy(
@@ -394,15 +396,16 @@ class EchosViewModel(
 
     private fun observeFilters() {
         combine(
+            echoDataSource.observeTopics(),
             selectedTopicFilters,
             selectedMoodFilters
-        ) { selectedTopics, selectedMoods ->
+        ) { allTopics, selectedTopics, selectedMoods ->
             _state.update { echosState ->
                 echosState.copy(
-                    topics = echosState.topics.map { selectableTopic ->
+                    topics = allTopics.map { selectableTopic ->
                         Selectable(
-                            item = selectableTopic.item,
-                            selected = selectedTopics.contains(selectableTopic.item)
+                            item = selectableTopic,
+                            selected = selectedTopics.contains(selectableTopic)
                         )
                     },
                     moods = MoodUi.entries.map { mood ->
@@ -418,6 +421,26 @@ class EchosViewModel(
                 )
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun Flow<List<Echo>>.filterByMoodAndTopics(): Flow<List<Echo>> {
+        return combine(this, selectedMoodFilters, selectedTopicFilters) { echoList, selectedMoodFilters, selectedTopicFilters ->
+            echoList.filter { echo ->
+                val matchesMoodFilter = selectedMoodFilters
+                    .takeIf { it.isNotEmpty() }
+                    ?.any { it.name == echo.mood.name }
+                    ?: true
+
+                val matchesTopicFilters = selectedTopicFilters
+                    .takeIf { it.isNotEmpty() }
+                    ?.any {
+                        it in echo.topics
+                    }
+                    ?: true
+
+                matchesMoodFilter && matchesTopicFilters
+            }
+        }
     }
 
     private fun List<String>.deriveTopicsToText(): UiText {
