@@ -67,7 +67,7 @@ class SettingsViewModel(
             }
             .onEach { filteredResults ->
                 _state.update {
-                    val filteredNonDefaultResults = filteredResults - it.topics
+                    val filteredNonDefaultResults = filteredResults - it.topics.toSet()
                     val searchText = it.searchText.trim()
                     val isNewTopic = searchText !in filteredNonDefaultResults && searchText !in it.topics
                             && searchText.isNotBlank()
@@ -141,6 +141,14 @@ class SettingsViewModel(
 
     private fun onSelectTopicClick(topic: String) {
         viewModelScope.launch {
+            _state.update { state ->
+                state.copy(
+                    isTopicSuggestionsVisible = false,
+                    isTopicTextInputVisible = false,
+                    searchText = ""
+                )
+            }
+
             val newDefaultTopic = (state.value.topics + topic).distinct()
             settingsPreference.saveDefaultTopics(newDefaultTopic)
         }

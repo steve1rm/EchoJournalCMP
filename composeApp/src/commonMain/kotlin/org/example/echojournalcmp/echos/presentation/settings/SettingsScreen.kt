@@ -100,7 +100,7 @@ fun SettingsScreen(
                     },
                     canInputText = state.isTopicTextInputVisible,
                     showSuggestionsDropDown = state.isTopicSuggestionsVisible,
-                    onTableCanInputText = {
+                    onToggleCanInputText = {
                         onAction(SettingsAction.OnAddButtonClick)
                     },
                     onDismissSuggestionsDropDown = {

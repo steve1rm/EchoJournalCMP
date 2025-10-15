@@ -20,6 +20,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.IntOffset
@@ -56,18 +59,29 @@ fun DefaultTopicSelectorCard(
     showSuggestionsDropDown: Boolean,
     canInputText: Boolean,
     onSearchTextChange: (text: String) -> Unit,
-    onTableCanInputText: () -> Unit,
+    onToggleCanInputText: () -> Unit,
     onAddTopicClick: (topic: String) -> Unit,
     onRemoveTopicClick: (topic: String) -> Unit,
     onDismissSuggestionsDropDown: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    val topicTextFocusRequester = remember {
+        FocusRequester()
+    }
+
     var topicSuggestionsVerticalOffset by remember {
         mutableIntStateOf(0)
     }
 
     val unselectedSuggestions = remember(topicSuggestions) {
         topicSuggestions.asUnselectedItems()
+    }
+
+    LaunchedEffect(canInputText) {
+        if(canInputText) {
+            topicTextFocusRequester.requestFocus()
+        }
     }
 
     Column(
@@ -136,6 +150,7 @@ fun DefaultTopicSelectorCard(
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically)
+                            .focusRequester(topicTextFocusRequester)
                     )
                 }
                 else {
@@ -143,7 +158,7 @@ fun DefaultTopicSelectorCard(
                         modifier = Modifier
                             .clip(CircleShape)
                             .background(Gray6)
-                            .clickable(onClick = onTableCanInputText),
+                            .clickable(onClick = onToggleCanInputText),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -178,7 +193,9 @@ fun DefaultTopicSelectorCard(
                     dropDownExtra = if(showCreateTopicOption) {
                         SelectableOptionExtra(
                             text = searchText,
-                            onClick = {  }
+                            onClick = {
+                                onAddTopicClick(searchText)
+                            }
                         )
                     } else {
                         null
