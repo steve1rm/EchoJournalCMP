@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalTime::class)
 
 package org.example.echojournalcmp.echos.presentation.echos
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
@@ -52,7 +53,8 @@ import kotlin.time.Instant
 class EchosViewModel(
     private val voiceRecorder: VoiceRecorder,
     private val audioPlayer: AudioPlayer,
-    private val echoDataSource: EchoDataSource
+    private val echoDataSource: EchoDataSource,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     companion object {
@@ -75,6 +77,7 @@ class EchosViewModel(
                 /** Load initial data here **/
                 observeFilters()
                 observeEchos()
+                fetchNavigationArgs()
                 hasLoadedInitialData = true
             }
         }
@@ -111,6 +114,24 @@ class EchosViewModel(
                 }
             }
         }.flowOn(Dispatchers.Default)
+
+    private fun fetchNavigationArgs() {
+        val startRecording = savedStateHandle["startRecording"] ?: false
+
+        Logger.d {
+            "WIDGET startRecording $startRecording"
+        }
+
+        if(startRecording) {
+            _state.update {
+                it.copy(currentCapturedMethod = AudioCaptureMethod.STANDARD)
+            }
+
+            viewModelScope.launch {
+                echoChannel.send(EchoEvents.RequestAudioPermission)
+            }
+        }
+    }
 
     private fun observeEchos() {
         combine(
